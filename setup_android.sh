@@ -7,7 +7,7 @@ if [ ! -d "jdk-17.0.2" ]; then
     tar xzf openjdk-17.0.2_linux-x64_bin.tar.gz
     rm openjdk-17.0.2_linux-x64_bin.tar.gz
 fi
-export JAVA_HOME="$HOME/java/jdk-17.0.2"
+export JAVA_HOME="${JAVA_HOME:-$HOME/java/jdk-17.0.2}"
 export PATH="$JAVA_HOME/bin:$PATH"
 
 # Setup Android
@@ -20,14 +20,16 @@ if [ ! -d "latest" ]; then
     mv cmdline-tools latest
 fi
 
-export ANDROID_HOME="$HOME/Android/Sdk"
+export ANDROID_HOME="${ANDROID_HOME:-$HOME/Android/Sdk}"
 export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools"
 
-yes | sdkmanager --licenses
-sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+if [ ! -d "$ANDROID_HOME/platforms/android-34" ] || [ ! -d "$ANDROID_HOME/build-tools/34.0.0" ]; then
+    yes | sdkmanager --licenses
+    sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+fi
 
 # Flutter config and pub get
-cd /home/v4rdhan/Desktop/Android/1-MusicApp-Flutter
+cd /home/v4rdhan/Desktop/Desktop/Android/1-MusicApp-Flutter
 export PATH="$PATH:$HOME/flutter/bin"
 flutter config --no-analytics
 flutter pub get
