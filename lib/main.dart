@@ -1,27 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:audio_service/audio_service.dart';
+import 'services/audio_handler.dart';
 import 'services/player_controller.dart';
+import 'services/api_service.dart';
+import 'services/home_view_model.dart';
 import 'screens/home_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/library_screen.dart';
 import 'widgets/mini_player.dart';
 
-void main() {
-  runApp(const MusicApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final audioHandler = await AudioService.init(
+    builder: () => AudioPlayerHandler(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.example.music_app.channel.audio',
+      androidNotificationChannelName: 'Music Playback',
+      androidNotificationOngoing: true,
+      androidStopForegroundOnPause: true,
+      androidNotificationIcon: 'mipmap/ic_launcher',
+    ),
+  );
+
+  runApp(MusicApp(audioHandler: audioHandler));
 }
 
 class MusicApp extends StatefulWidget {
-  const MusicApp({super.key});
+  final AudioPlayerHandler audioHandler;
+  const MusicApp({super.key, required this.audioHandler});
 
   @override
   State<MusicApp> createState() => _MusicAppState();
 }
 
 class _MusicAppState extends State<MusicApp> {
-  final _playerController = MusicPlayerController();
+  late final MusicPlayerController _playerController;
+  late final ApiService _apiService;
+  late final HomeViewModel _homeViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _playerController = MusicPlayerController(audioHandler: widget.audioHandler);
+    _apiService = ApiService();
+    _homeViewModel = HomeViewModel(apiService: _apiService);
+  }
 
   @override
   void dispose() {
     _playerController.dispose();
+    _homeViewModel.dispose();
+    _apiService.dispose();
     super.dispose();
   }
 
@@ -29,24 +58,27 @@ class _MusicAppState extends State<MusicApp> {
   Widget build(BuildContext context) {
     return MusicPlayerProvider(
       controller: _playerController,
-      child: MaterialApp(
-        title: 'Music App',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: const Color(0xFF0A0A0F),
-          colorScheme: const ColorScheme.dark(
-            primary: Color(0xFF6C63FF),
-            secondary: Color(0xFFE040FB),
-            surface: Color(0xFF1A1A2E),
-            onSurface: Colors.white,
+      child: HomeViewModelProvider(
+        viewModel: _homeViewModel,
+        child: MaterialApp(
+          title: 'Music App',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            brightness: Brightness.dark,
+            scaffoldBackgroundColor: const Color(0xFF0A0A0F),
+            colorScheme: const ColorScheme.dark(
+              primary: Color(0xFF6C63FF),
+              secondary: Color(0xFFE040FB),
+              surface: Color(0xFF1A1A2E),
+              onSurface: Colors.white,
+            ),
+            useMaterial3: true,
+            fontFamily: 'Roboto',
+            splashColor: const Color(0xFF6C63FF).withOpacity(0.08),
+            highlightColor: Colors.white.withOpacity(0.03),
           ),
-          useMaterial3: true,
-          fontFamily: 'Roboto',
-          splashColor: const Color(0xFF6C63FF).withOpacity(0.08),
-          highlightColor: Colors.white.withOpacity(0.03),
+          home: const AppShell(),
         ),
-        home: const AppShell(),
       ),
     );
   }

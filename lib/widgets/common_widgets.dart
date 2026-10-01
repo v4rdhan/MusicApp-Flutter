@@ -232,6 +232,7 @@ class HorizontalCard extends StatelessWidget {
   final String subtitle;
   final double width;
   final VoidCallback? onTap;
+  final String? imageUrl;
 
   const HorizontalCard({
     super.key,
@@ -241,6 +242,7 @@ class HorizontalCard extends StatelessWidget {
     required this.subtitle,
     this.width = 155,
     this.onTap,
+    this.imageUrl,
   });
 
   @override
@@ -252,11 +254,16 @@ class HorizontalCard extends StatelessWidget {
         margin: const EdgeInsets.only(right: 14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: gradient,
-          ),
+          gradient: imageUrl == null || imageUrl!.isEmpty
+              ? LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: gradient,
+                )
+              : null,
+          color: imageUrl != null && imageUrl!.isNotEmpty
+              ? const Color(0xFF1A1A2E)
+              : null,
           boxShadow: [
             BoxShadow(
               color: gradient.first.withOpacity(0.35),
@@ -265,26 +272,71 @@ class HorizontalCard extends StatelessWidget {
             ),
           ],
         ),
+        clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
-            // Background icon
-            Positioned(
-              right: -10,
-              bottom: -10,
-              child: Icon(
-                icon,
-                size: 80,
-                color: Colors.white.withOpacity(0.12),
+            // Network image background
+            if (imageUrl != null && imageUrl!.isNotEmpty)
+              Positioned.fill(
+                child: Image.network(
+                  imageUrl!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: gradient,
+                      ),
+                    ),
+                    child: Icon(icon,
+                        size: 48,
+                        color: Colors.white.withOpacity(0.3)),
+                  ),
+                ),
               ),
-            ),
+
+            // Dark gradient overlay for readability on image
+            if (imageUrl != null && imageUrl!.isNotEmpty)
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.7),
+                      ],
+                      stops: const [0.3, 1.0],
+                    ),
+                  ),
+                ),
+              ),
+
+            // Fallback: Background icon (only when no image)
+            if (imageUrl == null || imageUrl!.isEmpty)
+              Positioned(
+                right: -10,
+                bottom: -10,
+                child: Icon(
+                  icon,
+                  size: 80,
+                  color: Colors.white.withOpacity(0.12),
+                ),
+              ),
+
+            // Text content
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Icon(icon, color: Colors.white, size: 32),
-                  const Spacer(),
+                  if (imageUrl == null || imageUrl!.isEmpty)
+                    Icon(icon, color: Colors.white, size: 32),
+                  if (imageUrl == null || imageUrl!.isEmpty)
+                    const Spacer(),
                   Text(
                     title,
                     style: const TextStyle(
@@ -316,6 +368,7 @@ class HorizontalCard extends StatelessWidget {
     );
   }
 }
+
 
 // ─── Glassmorphic Container ─────────────────────────────────────────────────
 class GlassContainer extends StatelessWidget {

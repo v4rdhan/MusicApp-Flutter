@@ -1,21 +1,38 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import '../models/song.dart';
-import '../data/sample_data.dart';
+import 'audio_handler.dart';
 
 class MusicPlayerController extends ChangeNotifier {
+  final AudioPlayerHandler _audioHandler;
+
+  MusicPlayerController({required AudioPlayerHandler audioHandler})
+      : _audioHandler = audioHandler {
+    _listenToAudioStreams();
+  }
+
+  // ─── Internal State ─────────────────────────────────────────────────────
   Song? _currentSong;
   List<Song> _queue = [];
   int _currentIndex = -1;
   bool _isPlaying = false;
   Duration _position = Duration.zero;
+  Duration _duration = Duration.zero;
   double _volume = 0.75;
   bool _shuffleOn = false;
   RepeatMode _repeatMode = RepeatMode.off;
-  Timer? _timer;
+  bool _isBuffering = false;
   final List<Song> _favorites = [];
   final List<Song> _recentlyPlayed = [];
+
+  // Stream subscriptions
+  StreamSubscription<Duration>? _positionSub;
+  StreamSubscription<Duration?>? _durationSub;
+  StreamSubscription<bool>? _playingSub;
+  StreamSubscription<ProcessingState>? _processingSub;
+  StreamSubscription<dynamic>? _customEventSub;
 
   // ─── Getters ───────────────────────────────────────────────────────────
   Song? get currentSong => _currentSong;
@@ -23,24 +40,81 @@ class MusicPlayerController extends ChangeNotifier {
   int get currentIndex => _currentIndex;
   bool get isPlaying => _isPlaying;
   Duration get position => _position;
-  Duration get duration => _currentSong?.duration ?? Duration.zero;
+  Duration get duration => _duration;
   double get volume => _volume;
   bool get shuffleOn => _shuffleOn;
   RepeatMode get repeatMode => _repeatMode;
   List<Song> get favorites => _favorites;
   List<Song> get recentlyPlayed => _recentlyPlayed;
   bool get hasSong => _currentSong != null;
+  bool get isBuffering => _isBuffering;
 
   double get progress {
-    if (duration.inMilliseconds == 0) return 0;
-    return _position.inMilliseconds / duration.inMilliseconds;
+    if (_duration.inMilliseconds == 0) return 0;
+    return _position.inMilliseconds / _duration.inMilliseconds;
+  }
+
+  // ─── Stream Listeners ──────────────────────────────────────────────────
+
+  void _listenToAudioStreams() {
+    // Position updates
+    _positionSub = _audioHandler.positionStream.listen((pos) {
+      _position = pos;
+      notifyListeners();
+    });
+
+    // Duration updates (changes when a new track loads)
+    _durationSub = _audioHandler.durationStream.listen((dur) {
+      if (dur != null) {
+        _duration = dur;
+        notifyListeners();
+      }
+    });
+
+    // Playing state
+    _playingSub = _audioHandler.playingStream.listen((playing) {
+      _isPlaying = playing;
+      notifyListeners();
+    });
+
+    // Processing state (buffering, completed, etc.)
+    _processingSub = _audioHandler.processingStateStream.listen((state) {
+      _isBuffering =
+          state == ProcessingState.loading ||
+          state == ProcessingState.buffering;
+
+      if (state == ProcessingState.completed) {
+        _handleTrackCompletion();
+      }
+      notifyListeners();
+    });
+
+    // Custom events from notification controls (skipToNext, skipToPrevious)
+    _customEventSub = _audioHandler.customEvent.listen((event) {
+      if (event == 'skipToNext') {
+        next();
+      } else if (event == 'skipToPrevious') {
+        previous();
+      }
+    });
+  }
+
+  void _handleTrackCompletion() {
+    if (_repeatMode == RepeatMode.one) {
+      // Replay the same song
+      if (_currentSong != null) {
+        _audioHandler.seek(Duration.zero);
+        _audioHandler.play();
+      }
+    } else {
+      next();
+    }
   }
 
   // ─── Play Controls ────────────────────────────────────────────────────
+
   void playSong(Song song, {List<Song>? playlist}) {
     _currentSong = song;
-    _position = Duration.zero;
-    _isPlaying = true;
 
     if (playlist != null) {
       _queue = List.from(playlist);
@@ -51,32 +125,26 @@ class MusicPlayerController extends ChangeNotifier {
     }
 
     _addToRecentlyPlayed(song);
-    _startTimer();
+    _audioHandler.playSong(song);
     notifyListeners();
   }
 
   void togglePlayPause() {
     if (_currentSong == null) return;
-    _isPlaying = !_isPlaying;
     if (_isPlaying) {
-      _startTimer();
+      _audioHandler.pause();
     } else {
-      _stopTimer();
+      _audioHandler.play();
     }
-    notifyListeners();
   }
 
   void pause() {
-    _isPlaying = false;
-    _stopTimer();
-    notifyListeners();
+    _audioHandler.pause();
   }
 
   void resume() {
     if (_currentSong == null) return;
-    _isPlaying = true;
-    _startTimer();
-    notifyListeners();
+    _audioHandler.play();
   }
 
   void next() {
@@ -99,10 +167,8 @@ class MusicPlayerController extends ChangeNotifier {
     }
 
     _currentSong = _queue[_currentIndex];
-    _position = Duration.zero;
-    _isPlaying = true;
     _addToRecentlyPlayed(_currentSong!);
-    _startTimer();
+    _audioHandler.playSong(_currentSong!);
     notifyListeners();
   }
 
@@ -111,8 +177,7 @@ class MusicPlayerController extends ChangeNotifier {
 
     // If more than 3 seconds in, restart current song
     if (_position.inSeconds > 3) {
-      _position = Duration.zero;
-      notifyListeners();
+      seekTo(0.0);
       return;
     }
 
@@ -122,30 +187,28 @@ class MusicPlayerController extends ChangeNotifier {
         _currentIndex = _queue.length - 1;
       } else {
         _currentIndex = 0;
-        _position = Duration.zero;
-        notifyListeners();
+        seekTo(0.0);
         return;
       }
     }
 
     _currentSong = _queue[_currentIndex];
-    _position = Duration.zero;
-    _isPlaying = true;
     _addToRecentlyPlayed(_currentSong!);
-    _startTimer();
+    _audioHandler.playSong(_currentSong!);
     notifyListeners();
   }
 
   void seekTo(double value) {
-    if (_currentSong == null) return;
-    _position = Duration(
-      milliseconds: (value * duration.inMilliseconds).round(),
+    if (_duration.inMilliseconds == 0) return;
+    final position = Duration(
+      milliseconds: (value * _duration.inMilliseconds).round(),
     );
-    notifyListeners();
+    _audioHandler.seek(position);
   }
 
   void setVolume(double v) {
     _volume = v.clamp(0.0, 1.0);
+    _audioHandler.setVolume(_volume);
     notifyListeners();
   }
 
@@ -190,34 +253,15 @@ class MusicPlayerController extends ChangeNotifier {
     }
   }
 
-  // ─── Timer (simulates playback) ───────────────────────────────────────
-  void _startTimer() {
-    _stopTimer();
-    _timer = Timer.periodic(const Duration(milliseconds: 200), (_) {
-      if (!_isPlaying || _currentSong == null) return;
-
-      _position += const Duration(milliseconds: 200);
-
-      if (_position >= duration) {
-        if (_repeatMode == RepeatMode.one) {
-          _position = Duration.zero;
-        } else {
-          next();
-          return;
-        }
-      }
-      notifyListeners();
-    });
-  }
-
-  void _stopTimer() {
-    _timer?.cancel();
-    _timer = null;
-  }
+  // ─── Cleanup ──────────────────────────────────────────────────────────
 
   @override
   void dispose() {
-    _stopTimer();
+    _positionSub?.cancel();
+    _durationSub?.cancel();
+    _playingSub?.cancel();
+    _processingSub?.cancel();
+    _customEventSub?.cancel();
     super.dispose();
   }
 }
