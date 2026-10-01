@@ -1,3 +1,5 @@
+import 'dart:ui';
+import 'dart:math' show min;
 import 'package:flutter/material.dart';
 import '../models/song.dart';
 import '../services/player_controller.dart';
@@ -16,6 +18,8 @@ class NowPlayingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final player = MusicPlayerProvider.of(context);
     final song = player.currentSong;
+    final screenSize = MediaQuery.sizeOf(context);
+    final artworkSize = min(screenSize.width * 0.7, screenSize.height * 0.42);
 
     if (song == null) {
       return const Scaffold(
@@ -29,22 +33,38 @@ class NowPlayingScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              song.artGradient.first.withOpacity(0.35),
-              const Color(0xFF0A0A0F),
-              const Color(0xFF0A0A0F),
-            ],
-            stops: const [0.0, 0.45, 1.0],
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (song.hasNetworkImage)
+            ImageFiltered(
+              imageFilter: ImageFilter.blur(sigmaX: 36, sigmaY: 36),
+              child: Image.network(
+                song.imageUrl!,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              ),
+            ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  song.artGradient.first.withOpacity(0.58),
+                  const Color(0xFF0A0A0F).withOpacity(0.88),
+                  const Color(0xFF0A0A0F),
+                ],
+                stops: const [0.0, 0.45, 1.0],
+              ),
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
               // ─── Top bar ──────────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -76,7 +96,7 @@ class NowPlayingScreen extends StatelessWidget {
                 ),
               ),
 
-              const Spacer(flex: 2),
+                  const SizedBox(height: 16),
 
               // ─── Album Art ────────────────────────────────────────
               Hero(
@@ -84,13 +104,14 @@ class NowPlayingScreen extends StatelessWidget {
                 child: GradientArt(
                   gradient: song.artGradient,
                   icon: song.artIcon,
-                  size: MediaQuery.of(context).size.width * 0.7,
-                  iconSize: MediaQuery.of(context).size.width * 0.25,
+                  size: artworkSize,
+                  iconSize: artworkSize * 0.36,
                   borderRadius: 24,
+                  imageUrl: song.imageUrl,
                 ),
               ),
 
-              const Spacer(flex: 2),
+                  const SizedBox(height: 20),
 
               // ─── Song Info ────────────────────────────────────────
               Padding(
@@ -140,7 +161,7 @@ class NowPlayingScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 28),
+                  const SizedBox(height: 16),
 
               // ─── Progress Bar ─────────────────────────────────────
               Padding(
@@ -191,7 +212,7 @@ class NowPlayingScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 16),
+                  const SizedBox(height: 8),
 
               // ─── Controls ─────────────────────────────────────────
               Padding(
@@ -263,7 +284,7 @@ class NowPlayingScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 20),
+                  const SizedBox(height: 8),
 
               // ─── Volume ───────────────────────────────────────────
               Padding(
@@ -297,10 +318,11 @@ class NowPlayingScreen extends StatelessWidget {
                 ),
               ),
 
-              const Spacer(),
-            ],
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

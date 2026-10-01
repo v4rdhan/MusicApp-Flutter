@@ -51,7 +51,8 @@ class MusicPlayerController extends ChangeNotifier {
 
   double get progress {
     if (_duration.inMilliseconds == 0) return 0;
-    return _position.inMilliseconds / _duration.inMilliseconds;
+    final value = _position.inMilliseconds / _duration.inMilliseconds;
+    return value.isFinite ? value.clamp(0.0, 1.0) : 0.0;
   }
 
   // ─── Stream Listeners ──────────────────────────────────────────────────

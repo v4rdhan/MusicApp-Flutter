@@ -8,6 +8,7 @@ class GradientArt extends StatelessWidget {
   final double size;
   final double iconSize;
   final double borderRadius;
+  final String? imageUrl;
 
   const GradientArt({
     super.key,
@@ -16,6 +17,7 @@ class GradientArt extends StatelessWidget {
     this.size = 56,
     this.iconSize = 28,
     this.borderRadius = 12,
+    this.imageUrl,
   });
 
   @override
@@ -38,7 +40,21 @@ class GradientArt extends StatelessWidget {
           ),
         ],
       ),
-      child: Icon(icon, color: Colors.white.withOpacity(0.9), size: iconSize),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Icon(icon, color: Colors.white.withOpacity(0.9), size: iconSize),
+            if (imageUrl != null && imageUrl!.isNotEmpty)
+              Image.network(
+                imageUrl!,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -77,6 +93,7 @@ class SongTile extends StatelessWidget {
                 size: 52,
                 iconSize: 24,
                 borderRadius: 10,
+                imageUrl: song.imageUrl,
               ),
               const SizedBox(width: 14),
               Expanded(
