@@ -4,6 +4,7 @@ import 'services/audio_handler.dart';
 import 'services/player_controller.dart';
 import 'services/api_service.dart';
 import 'services/home_view_model.dart';
+import 'services/storage_service.dart';
 import 'screens/home_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/library_screen.dart';
@@ -11,6 +12,11 @@ import 'widgets/mini_player.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize local storage before anything else
+  final storageService = StorageService();
+  await storageService.initialize();
+
   final audioHandler = await AudioService.init(
     builder: () => AudioPlayerHandler(),
     config: const AudioServiceConfig(
@@ -22,12 +28,17 @@ Future<void> main() async {
     ),
   );
 
-  runApp(MusicApp(audioHandler: audioHandler));
+  runApp(MusicApp(audioHandler: audioHandler, storageService: storageService));
 }
 
 class MusicApp extends StatefulWidget {
   final AudioPlayerHandler audioHandler;
-  const MusicApp({super.key, required this.audioHandler});
+  final StorageService storageService;
+  const MusicApp({
+    super.key,
+    required this.audioHandler,
+    required this.storageService,
+  });
 
   @override
   State<MusicApp> createState() => _MusicAppState();
@@ -41,7 +52,10 @@ class _MusicAppState extends State<MusicApp> {
   @override
   void initState() {
     super.initState();
-    _playerController = MusicPlayerController(audioHandler: widget.audioHandler);
+    _playerController = MusicPlayerController(
+      audioHandler: widget.audioHandler,
+      storageService: widget.storageService,
+    );
     _apiService = ApiService();
     _homeViewModel = HomeViewModel(apiService: _apiService);
   }

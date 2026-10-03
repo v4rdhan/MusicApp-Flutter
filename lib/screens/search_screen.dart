@@ -23,6 +23,34 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _isLoading = false;
   String? _errorMessage;
 
+  // Top songs state (fetched from API on first load)
+  List<Song> _topSongs = [];
+  bool _isLoadingTopSongs = true;
+  String? _topSongsError;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTopSongs();
+  }
+
+  Future<void> _fetchTopSongs() async {
+    setState(() {
+      _isLoadingTopSongs = true;
+      _topSongsError = null;
+    });
+    final result = await _apiService.searchSongs('trending hits', limit: 15);
+    if (!mounted) return;
+    setState(() {
+      _isLoadingTopSongs = false;
+      if (result.isSuccess) {
+        _topSongs = result.data!.results;
+      } else {
+        _topSongsError = result.error!.message;
+      }
+    });
+  }
+
   void _onSearch(String query) {
     final trimmedQuery = query.trim();
     _searchDebounce?.cancel();
@@ -66,6 +94,12 @@ class _SearchScreenState extends State<SearchScreen> {
       _errorMessage = null;
     });
     _fetchResults(_query, requestId);
+  }
+
+  /// When a category card is tapped, fill the search bar and trigger search.
+  void _onCategoryTap(String categoryTitle) {
+    _searchController.text = categoryTitle;
+    _onSearch(categoryTitle);
   }
 
   @override
@@ -142,7 +176,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
 
-        // ─── Results or Categories ──────────────────────────────
+        // ─── Search Results ─────────────────────────────────────
         if (_query.isNotEmpty) ...[
           SliverToBoxAdapter(
             child: Padding(
@@ -213,6 +247,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
         ] else ...[
+          // ─── Browse Categories ────────────────────────────────
           const SliverToBoxAdapter(
             child: SectionHeader(title: 'Browse Categories'),
           ),
@@ -229,39 +264,42 @@ class _SearchScreenState extends State<SearchScreen> {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   final cat = browseCategories[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: cat.gradient,
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          right: -8,
-                          bottom: -8,
-                          child: Transform.rotate(
-                            angle: 0.3,
-                            child: Icon(cat.icon,
-                                size: 60,
-                                color: Colors.white.withOpacity(0.15)),
-                          ),
+                  return GestureDetector(
+                    onTap: () => _onCategoryTap(cat.title),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: cat.gradient,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Text(
-                            cat.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            right: -8,
+                            bottom: -8,
+                            child: Transform.rotate(
+                              angle: 0.3,
+                              child: Icon(cat.icon,
+                                  size: 60,
+                                  color: Colors.white.withOpacity(0.15)),
                             ),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Text(
+                              cat.title,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -271,38 +309,129 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ],
 
-        // ─── Top Songs ──────────────────────────────────────────
+        // ─── Top Songs (API-fetched trending, shown when not searching) ──
         if (_query.isEmpty) ...[
-          const SliverToBoxAdapter(
-            child: SectionHeader(title: 'Top Songs'),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final song = allSongs[index];
-                final isCurrentSong =
-                    player.currentSong?.id == song.id && player.isPlaying;
-                return SongTile(
-                  song: song,
-                  isPlaying: isCurrentSong,
-                  onTap: () =>
-                      player.playSong(song, playlist: allSongs),
-                  trailing: Padding(
-                    padding: const EdgeInsets.only(left: 4),
-                    child: Text(
-                      '#${index + 1}',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.3),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 28, 20, 14),
+              child: Row(
+                children: [
+                  const Text(
+                    'Top Songs',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.3,
                     ),
                   ),
-                );
-              },
-              childCount: 10,
+                  const SizedBox(width: 8),
+                  Icon(Icons.trending_up_rounded,
+                      color: const Color(0xFF6C63FF).withOpacity(0.7),
+                      size: 20),
+                ],
+              ),
             ),
           ),
+          if (_isLoadingTopSongs)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 40),
+                child: Center(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Loading trending songs...',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.4),
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          else if (_topSongsError != null)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20, vertical: 24),
+                child: GlassContainer(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Icon(Icons.cloud_off_rounded,
+                          color: Colors.white.withOpacity(0.3), size: 36),
+                      const SizedBox(height: 12),
+                      Text(
+                        _topSongsError!,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.5),
+                          fontSize: 13,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      TextButton.icon(
+                        onPressed: _fetchTopSongs,
+                        icon: const Icon(Icons.refresh_rounded, size: 18),
+                        label: const Text('Retry'),
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color(0xFF6C63FF),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          else
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final song = _topSongs[index];
+                  final isCurrentSong =
+                      player.currentSong?.id == song.id && player.isPlaying;
+                  return SongTile(
+                    song: song,
+                    isPlaying: isCurrentSong,
+                    onTap: () =>
+                        player.playSong(song, playlist: _topSongs),
+                    trailing: Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: const Color(0xFF6C63FF)
+                              .withOpacity(index < 3 ? 0.2 : 0.08),
+                        ),
+                        child: Text(
+                          '${index + 1}',
+                          style: TextStyle(
+                            color: index < 3
+                                ? const Color(0xFF6C63FF)
+                                : Colors.white.withOpacity(0.4),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                childCount: _topSongs.length,
+              ),
+            ),
         ],
 
         // Bottom padding

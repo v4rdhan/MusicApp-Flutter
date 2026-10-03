@@ -107,6 +107,10 @@ class QuickPicksGridSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final itemWidth = screenWidth > 50 ? (screenWidth - 50) / 2 : 140.0;
+    final itemHeight = itemWidth / 3.2;
+
     return AppShimmer(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -115,8 +119,8 @@ class QuickPicksGridSkeleton extends StatelessWidget {
           runSpacing: 10,
           children: List.generate(6, (index) {
             return SizedBox(
-              width: (MediaQuery.of(context).size.width - 50) / 2,
-              height: (MediaQuery.of(context).size.width - 50) / 2 / 3.2,
+              width: itemWidth,
+              height: itemHeight,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),

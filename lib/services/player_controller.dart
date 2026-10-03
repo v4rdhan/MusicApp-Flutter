@@ -4,12 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import '../models/song.dart';
 import 'audio_handler.dart';
+import 'storage_service.dart';
 
 class MusicPlayerController extends ChangeNotifier {
   final AudioPlayerHandler _audioHandler;
+  final StorageService _storageService;
 
-  MusicPlayerController({required AudioPlayerHandler audioHandler})
-      : _audioHandler = audioHandler {
+  MusicPlayerController({
+    required AudioPlayerHandler audioHandler,
+    required StorageService storageService,
+  })  : _audioHandler = audioHandler,
+        _storageService = storageService {
+    _loadPersistedData();
     _listenToAudioStreams();
   }
 
@@ -24,8 +30,8 @@ class MusicPlayerController extends ChangeNotifier {
   bool _shuffleOn = false;
   RepeatMode _repeatMode = RepeatMode.off;
   bool _isBuffering = false;
-  final List<Song> _favorites = [];
-  final List<Song> _recentlyPlayed = [];
+  List<Song> _favorites = [];
+  List<Song> _recentlyPlayed = [];
 
   // Stream subscriptions
   StreamSubscription<Duration>? _positionSub;
@@ -53,6 +59,21 @@ class MusicPlayerController extends ChangeNotifier {
     if (_duration.inMilliseconds == 0) return 0;
     final value = _position.inMilliseconds / _duration.inMilliseconds;
     return value.isFinite ? value.clamp(0.0, 1.0) : 0.0;
+  }
+
+  // ─── Persistence ───────────────────────────────────────────────────────
+
+  void _loadPersistedData() {
+    _favorites = _storageService.getFavorites();
+    _recentlyPlayed = _storageService.getRecentlyPlayed();
+  }
+
+  void _persistFavorites() {
+    _storageService.saveFavorites(_favorites);
+  }
+
+  void _persistRecentlyPlayed() {
+    _storageService.saveRecentlyPlayed(_recentlyPlayed);
   }
 
   // ─── Stream Listeners ──────────────────────────────────────────────────
@@ -242,6 +263,7 @@ class MusicPlayerController extends ChangeNotifier {
     } else {
       _favorites.add(song);
     }
+    _persistFavorites();
     notifyListeners();
   }
 
@@ -249,9 +271,10 @@ class MusicPlayerController extends ChangeNotifier {
   void _addToRecentlyPlayed(Song song) {
     _recentlyPlayed.removeWhere((s) => s.id == song.id);
     _recentlyPlayed.insert(0, song);
-    if (_recentlyPlayed.length > 20) {
+    if (_recentlyPlayed.length > 50) {
       _recentlyPlayed.removeLast();
     }
+    _persistRecentlyPlayed();
   }
 
   // ─── Cleanup ──────────────────────────────────────────────────────────

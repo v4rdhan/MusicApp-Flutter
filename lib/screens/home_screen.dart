@@ -21,7 +21,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!vm.quickPicks.isLoading &&
         !vm.quickPicks.isLoaded &&
         !vm.quickPicks.isError) {
-      vm.initialize();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          vm.initialize();
+        }
+      });
     }
   }
 
