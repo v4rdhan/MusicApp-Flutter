@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/utils/string_extensions.dart';
 
 // ─── Shared Types ───────────────────────────────────────────────────────────
 
@@ -57,7 +58,7 @@ class ArtistInfo {
   factory ArtistInfo.fromJson(Map<String, dynamic> json) {
     return ArtistInfo(
       id: (json['id'] ?? '').toString(),
-      name: json['name'] as String? ?? '',
+      name: (json['name'] as String? ?? '').cleanHtml(),
       role: json['role'] as String? ?? '',
       type: json['type'] as String? ?? 'artist',
       image: (json['image'] as List<dynamic>?)
@@ -190,19 +191,19 @@ class Song {
     }
     // Fallback for global search response which uses 'primaryArtists' string
     if (artistName.isEmpty) {
-      artistName = json['primaryArtists'] as String? ??
+        artistName = (json['primaryArtists'] as String? ??
           json['singers'] as String? ??
-          'Unknown Artist';
+          'Unknown Artist').cleanHtml();
     }
 
     // Album name
     String albumName = '';
     String? albumId;
     if (json['album'] != null && json['album'] is Map) {
-      albumName = json['album']['name'] as String? ?? '';
+      albumName = (json['album']['name'] as String? ?? '').cleanHtml();
       albumId = (json['album']['id'] ?? '').toString();
     } else if (json['album'] is String) {
-      albumName = json['album'] as String;
+      albumName = (json['album'] as String).cleanHtml();
     }
 
     final id = (json['id'] ?? '').toString();
@@ -210,9 +211,10 @@ class Song {
 
     return Song(
       id: id,
-      title: json['name'] as String? ?? json['title'] as String? ?? 'Unknown',
-      artist: artistName,
-      album: albumName,
+        title: (json['name'] as String? ?? json['title'] as String? ?? 'Unknown')
+          .cleanHtml(),
+        artist: artistName.cleanHtml(),
+        album: albumName.cleanHtml(),
       duration: Duration(seconds: durationSecs),
       artGradient: _gradientForId(id),
       artIcon: Icons.music_note,

@@ -202,6 +202,27 @@ class ApiService {
     });
   }
 
+  /// Fetches songs related to an existing song ID.
+  Future<ApiResult<List<Song>>> getSongSuggestions(String songId) async {
+    return _wrap(() async {
+      final body = await _get('/songs/$songId/suggestions');
+      final data = body['data'];
+      final results = data is List<dynamic>
+          ? data
+          : data is Map<String, dynamic>
+              ? (data['results'] ?? data['songs']) as List<dynamic>?
+              : null;
+
+      if (results == null) {
+        throw const ParseError('Unexpected recommendations response.');
+      }
+
+      return results
+          .map((item) => Song.fromJson(item as Map<String, dynamic>))
+          .toList();
+    });
+  }
+
   // ──────────────────────────────────────────────────────────────────────────
   //  Album Search
   // ──────────────────────────────────────────────────────────────────────────
@@ -307,21 +328,6 @@ class ApiService {
   Future<ApiResult<List<Song>>> getSongsByIds(List<String> songIds) async {
     return _wrap(() async {
       final body = await _get('/songs/${songIds.join(',')}');
-      final data = body['data'] as List<dynamic>;
-      return data
-          .map((e) => Song.fromJson(e as Map<String, dynamic>))
-          .toList();
-    });
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
-  //  Song Suggestions
-  // ──────────────────────────────────────────────────────────────────────────
-
-  /// Retrieves song suggestions based on a song ID.
-  Future<ApiResult<List<Song>>> getSongSuggestions(String songId) async {
-    return _wrap(() async {
-      final body = await _get('/songs/$songId/suggestions');
       final data = body['data'] as List<dynamic>;
       return data
           .map((e) => Song.fromJson(e as Map<String, dynamic>))

@@ -7,6 +7,7 @@ import '../models/song.dart';
 class StorageService {
   static const String _favoritesKey = 'favorites_songs';
   static const String _recentlyPlayedKey = 'recently_played_songs';
+  static const String _languagesKey = 'selected_languages';
   static const int _maxRecentlyPlayed = 50;
 
   SharedPreferences? _prefs;
@@ -63,5 +64,23 @@ class StorageService {
     final capped = songs.take(_maxRecentlyPlayed).toList();
     final encoded = capped.map((s) => jsonEncode(s.toJson())).toList();
     await _prefs?.setStringList(_recentlyPlayedKey, encoded);
+  }
+
+  // ─── Language Preferences ──────────────────────────────────────────────
+
+  /// Returns true if the user has already selected languages.
+  bool hasSelectedLanguages() {
+    final langs = _prefs?.getStringList(_languagesKey);
+    return langs != null && langs.isNotEmpty;
+  }
+
+  /// Returns the user's selected language preferences.
+  List<String> getSelectedLanguages() {
+    return _prefs?.getStringList(_languagesKey) ?? [];
+  }
+
+  /// Persists the user's selected languages.
+  Future<void> saveSelectedLanguages(List<String> languages) async {
+    await _prefs?.setStringList(_languagesKey, languages);
   }
 }

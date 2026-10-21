@@ -21,6 +21,7 @@ class MusicPlayerController extends ChangeNotifier {
 
   // ─── Internal State ─────────────────────────────────────────────────────
   Song? _currentSong;
+  final ValueNotifier<Song?> currentSongListenable = ValueNotifier(null);
   List<Song> _queue = [];
   int _currentIndex = -1;
   bool _isPlaying = false;
@@ -74,6 +75,11 @@ class MusicPlayerController extends ChangeNotifier {
 
   void _persistRecentlyPlayed() {
     _storageService.saveRecentlyPlayed(_recentlyPlayed);
+  }
+
+  void _setCurrentSong(Song song) {
+    _currentSong = song;
+    currentSongListenable.value = song;
   }
 
   // ─── Stream Listeners ──────────────────────────────────────────────────
@@ -136,7 +142,7 @@ class MusicPlayerController extends ChangeNotifier {
   // ─── Play Controls ────────────────────────────────────────────────────
 
   void playSong(Song song, {List<Song>? playlist}) {
-    _currentSong = song;
+    _setCurrentSong(song);
 
     if (playlist != null) {
       _queue = List.from(playlist);
@@ -188,7 +194,7 @@ class MusicPlayerController extends ChangeNotifier {
       }
     }
 
-    _currentSong = _queue[_currentIndex];
+    _setCurrentSong(_queue[_currentIndex]);
     _addToRecentlyPlayed(_currentSong!);
     _audioHandler.playSong(_currentSong!);
     notifyListeners();
@@ -214,7 +220,7 @@ class MusicPlayerController extends ChangeNotifier {
       }
     }
 
-    _currentSong = _queue[_currentIndex];
+    _setCurrentSong(_queue[_currentIndex]);
     _addToRecentlyPlayed(_currentSong!);
     _audioHandler.playSong(_currentSong!);
     notifyListeners();
@@ -286,6 +292,7 @@ class MusicPlayerController extends ChangeNotifier {
     _playingSub?.cancel();
     _processingSub?.cancel();
     _customEventSub?.cancel();
+    currentSongListenable.dispose();
     super.dispose();
   }
 }
@@ -301,6 +308,12 @@ class MusicPlayerProvider extends InheritedNotifier<MusicPlayerController> {
   static MusicPlayerController of(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<MusicPlayerProvider>()!
+        .notifier!;
+  }
+
+  static MusicPlayerController read(BuildContext context) {
+    return context
+        .getInheritedWidgetOfExactType<MusicPlayerProvider>()!
         .notifier!;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audio_service/audio_service.dart';
+import 'models/song.dart';
 import 'services/audio_handler.dart';
 import 'services/player_controller.dart';
 import 'services/api_service.dart';
@@ -8,6 +9,7 @@ import 'services/storage_service.dart';
 import 'screens/home_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/library_screen.dart';
+import 'screens/language_selection_screen.dart';
 import 'widgets/mini_player.dart';
 
 Future<void> main() async {
@@ -57,7 +59,10 @@ class _MusicAppState extends State<MusicApp> {
       storageService: widget.storageService,
     );
     _apiService = ApiService();
-    _homeViewModel = HomeViewModel(apiService: _apiService);
+    _homeViewModel = HomeViewModel(
+      apiService: _apiService,
+      storageService: widget.storageService,
+    );
   }
 
   @override
@@ -91,10 +96,47 @@ class _MusicAppState extends State<MusicApp> {
             splashColor: const Color(0xFF6C63FF).withOpacity(0.08),
             highlightColor: Colors.white.withOpacity(0.03),
           ),
-          home: const AppShell(),
+          home: _RootRouter(storageService: widget.storageService),
         ),
       ),
     );
+  }
+}
+
+// ─── Root Router ──────────────────────────────────────────────────────────
+// Checks whether the user has already chosen music languages.
+// If not, shows the LanguageSelectionScreen before the main app.
+
+class _RootRouter extends StatefulWidget {
+  final StorageService storageService;
+  const _RootRouter({required this.storageService});
+
+  @override
+  State<_RootRouter> createState() => _RootRouterState();
+}
+
+class _RootRouterState extends State<_RootRouter> {
+  late bool _needsOnboarding;
+
+  @override
+  void initState() {
+    super.initState();
+    _needsOnboarding = !widget.storageService.hasSelectedLanguages();
+  }
+
+  void _onLanguageSelectionComplete() {
+    setState(() => _needsOnboarding = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_needsOnboarding) {
+      return LanguageSelectionScreen(
+        storageService: widget.storageService,
+        onComplete: _onLanguageSelectionComplete,
+      );
+    }
+    return const AppShell();
   }
 }
 
@@ -116,7 +158,7 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final player = MusicPlayerProvider.of(context);
+    final player = MusicPlayerProvider.read(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFF0A0A0F),
@@ -155,9 +197,6 @@ class _AppShellState extends State<AppShell> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Mini Player
-                if (player.hasSong) const MiniPlayer(),
-
                 // Bottom Navigation
                 Container(
                   decoration: BoxDecoration(
@@ -202,6 +241,18 @@ class _AppShellState extends State<AppShell> {
                   ),
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            child: ValueListenableBuilder<Song?>(
+              valueListenable: player.currentSongListenable,
+              child: const MiniPlayer(),
+              builder: (context, song, child) =>
+                  song == null ? const SizedBox.shrink() : child!,
             ),
           ),
         ],
