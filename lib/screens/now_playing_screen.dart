@@ -88,151 +88,169 @@ class NowPlayingScreen extends StatelessWidget {
             bottom: false,
             child: Column(
               children: [
+                // ─── Draggable upper zone (header + artwork + title) ───
                 GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onVerticalDragStart: onDragStart,
                   onVerticalDragUpdate: onDragUpdate,
                   onVerticalDragEnd: onDragEnd,
                   onVerticalDragCancel: onDragCancel,
-                  child: SizedBox(
-                    height: 60,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed:
-                              onCollapse ?? () => Navigator.pop(context),
-                          icon: const Icon(Icons.keyboard_arrow_down_rounded,
-                              color: Colors.white, size: 32),
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Playing from Playlist',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.55),
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Text(
-                                song.album.isEmpty ? 'Liked Songs' : song.album,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Top header bar
+                      SizedBox(
+                        height: 60,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed:
+                                  onCollapse ?? () => Navigator.pop(context),
+                              icon: const Icon(
+                                  Icons.keyboard_arrow_down_rounded,
                                   color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                  size: 32),
+                            ),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Playing from Playlist',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.55),
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text(
+                                    song.album.isEmpty
+                                        ? 'Liked Songs'
+                                        : song.album,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.more_vert_rounded,
+                                  color: Colors.white70, size: 24),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Album artwork
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Hero(
+                            tag: 'album_art_${song.id}',
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: song.hasNetworkImage
+                                  ? Image.network(
+                                      song.imageUrl!,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) =>
+                                          _fallbackArtwork(song),
+                                    )
+                                  : _fallbackArtwork(song),
+                            ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.more_vert_rounded,
-                              color: Colors.white70, size: 24),
+                      ),
+                      // Song title + artist + favorite
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    song.title,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    song.artist,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.6),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ListenableBuilder(
+                              listenable: player,
+                              builder: (context, child) => IconButton(
+                                onPressed: () => player.toggleFavorite(song),
+                                icon: Icon(
+                                  player.isFavorite(song)
+                                      ? Icons.favorite_rounded
+                                      : Icons.favorite_border_rounded,
+                                  color: player.isFavorite(song)
+                                      ? const Color(0xFFE040FB)
+                                      : Colors.white60,
+                                  size: 28,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              Expanded(
-                child: Padding(
+
+                // ─── Controls zone (slider + playback buttons) ───
+                Padding(
                   padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: Center(
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: Hero(
-                              tag: 'album_art_${song.id}',
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: song.hasNetworkImage
-                                    ? Image.network(
-                                        song.imageUrl!,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) =>
-                                            _fallbackArtwork(song),
-                                      )
-                                    : _fallbackArtwork(song),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  song.title,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  song.artist,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.6),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ListenableBuilder(
-                            listenable: player,
-                            builder: (context, child) => IconButton(
-                              onPressed: () => player.toggleFavorite(song),
-                              icon: Icon(
-                                player.isFavorite(song)
-                                    ? Icons.favorite_rounded
-                                    : Icons.favorite_border_rounded,
-                                color: player.isFavorite(song)
-                                    ? const Color(0xFFE040FB)
-                                    : Colors.white60,
-                                size: 28,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
                       ListenableBuilder(
                         listenable: player,
                         builder: (context, child) => Column(
                           children: [
                             SliderTheme(
                               data: SliderTheme.of(context).copyWith(
-                                trackShape: const RectangularSliderTrackShape(),
+                                trackShape:
+                                    const RectangularSliderTrackShape(),
                                 trackHeight: 3.5,
                                 thumbShape: const RoundSliderThumbShape(
                                     enabledThumbRadius: 5.5),
-                                overlayShape: const RoundSliderOverlayShape(
-                                    overlayRadius: 12),
+                                overlayShape:
+                                    const RoundSliderOverlayShape(
+                                        overlayRadius: 12),
                                 activeTrackColor: song.artGradient.first,
                                 inactiveTrackColor:
                                     Colors.white.withOpacity(0.12),
                                 thumbColor: Colors.white,
-                                overlayColor:
-                                    song.artGradient.first.withOpacity(0.2),
+                                overlayColor: song.artGradient.first
+                                    .withOpacity(0.2),
                               ),
                               child: Slider(
                                 value: player.progress.clamp(0.0, 1.0),
@@ -240,7 +258,8 @@ class NowPlayingScreen extends StatelessWidget {
                               ),
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   _formatDuration(player.position),
@@ -265,7 +284,8 @@ class NowPlayingScreen extends StatelessWidget {
                       ListenableBuilder(
                         listenable: player,
                         builder: (context, child) => Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
                           children: [
                             IconButton(
                               onPressed: player.toggleShuffle,
@@ -278,8 +298,10 @@ class NowPlayingScreen extends StatelessWidget {
                             ),
                             IconButton(
                               onPressed: player.previous,
-                              icon: const Icon(Icons.skip_previous_rounded,
-                                  color: Colors.white, size: 32),
+                              icon: const Icon(
+                                  Icons.skip_previous_rounded,
+                                  color: Colors.white,
+                                  size: 32),
                             ),
                             GestureDetector(
                               onTap: player.togglePlayPause,
@@ -311,8 +333,10 @@ class NowPlayingScreen extends StatelessWidget {
                             ),
                             IconButton(
                               onPressed: player.next,
-                              icon: const Icon(Icons.skip_next_rounded,
-                                  color: Colors.white, size: 32),
+                              icon: const Icon(
+                                  Icons.skip_next_rounded,
+                                  color: Colors.white,
+                                  size: 32),
                             ),
                             IconButton(
                               onPressed: player.toggleRepeat,
@@ -320,9 +344,10 @@ class NowPlayingScreen extends StatelessWidget {
                                 player.repeatMode == RepeatMode.one
                                     ? Icons.repeat_one_rounded
                                     : Icons.repeat_rounded,
-                                color: player.repeatMode != RepeatMode.off
-                                    ? song.artGradient.first
-                                    : Colors.white54,
+                                color:
+                                    player.repeatMode != RepeatMode.off
+                                        ? song.artGradient.first
+                                        : Colors.white54,
                               ),
                             ),
                           ],
@@ -331,7 +356,6 @@ class NowPlayingScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
                 SafeArea(
                   top: false,
                   child: Padding(
