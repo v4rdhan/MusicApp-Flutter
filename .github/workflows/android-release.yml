@@ -1,0 +1,87 @@
+name: Android release
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Calculate release version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          base_version="$(sed -n 's/^version: *//p' pubspec.yaml)"
+          version="$(python3 - "$base_version" <<'PY'
+          import re
+          import subprocess
+          import sys
+
+          pattern = re.compile(r"^v?([0-9]+)\.([0-9]+)\.([0-9]+)\+([0-9]+)$")
+          baseline = pattern.fullmatch(sys.argv[1])
+          if baseline is None:
+              raise SystemExit("Expected pubspec.yaml version in major.minor.patch+build format.")
+
+          versions = [tuple(map(int, baseline.groups()))]
+          for tag in subprocess.check_output(
+              ["git", "tag", "--list"], text=True
+          ).splitlines():
+              match = pattern.fullmatch(tag)
+              if match:
+                  versions.append(tuple(map(int, match.groups())))
+
+          major, minor, patch, build = max(versions)
+          print(f"{major}.{minor}.{patch + 1}+{build + 1}")
+          PY
+          )"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: |
+          flutter build apk --release \
+            --build-name "${VERSION%%+*}" \
+            --build-number "${VERSION##*+}"
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "v${VERSION}" \
+            "build/app/outputs/flutter-apk/app-release.apk#music_app-${VERSION}.apk" \
+            --target "$GITHUB_SHA" \
+            --title "v${VERSION}" \
+            --generate-notes
