@@ -89,145 +89,150 @@ class NowPlayingScreen extends StatelessWidget {
             child: Column(
               children: [
                 // ─── Draggable upper zone (header + artwork + title) ───
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onVerticalDragStart: onDragStart,
-                  onVerticalDragUpdate: onDragUpdate,
-                  onVerticalDragEnd: onDragEnd,
-                  onVerticalDragCancel: onDragCancel,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Top header bar
-                      SizedBox(
-                        height: 60,
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed:
-                                  onCollapse ?? () => Navigator.pop(context),
-                              icon: const Icon(
+                Expanded(
+                  flex: 7,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onVerticalDragStart: onDragStart,
+                    onVerticalDragUpdate: onDragUpdate,
+                    onVerticalDragEnd: onDragEnd,
+                    onVerticalDragCancel: onDragCancel,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 60,
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed:
+                                    onCollapse ?? () => Navigator.pop(context),
+                                icon: const Icon(
                                   Icons.keyboard_arrow_down_rounded,
                                   color: Colors.white,
-                                  size: 32),
-                            ),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Playing from Playlist',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.55),
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    song.album.isEmpty
-                                        ? 'Liked Songs'
-                                        : song.album,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
+                                  size: 32,
+                                ),
                               ),
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.more_vert_rounded,
-                                  color: Colors.white70, size: 24),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Album artwork
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Hero(
-                            tag: 'album_art_${song.id}',
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: song.hasNetworkImage
-                                  ? Image.network(
-                                      song.imageUrl!,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) =>
-                                          _fallbackArtwork(song),
-                                    )
-                                  : _fallbackArtwork(song),
-                            ),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Playing from Playlist',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.55),
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    Text(
+                                      song.album.isEmpty
+                                          ? 'Liked Songs'
+                                          : song.album,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.more_vert_rounded,
+                                    color: Colors.white70, size: 24),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      // Song title + artist + favorite
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    song.title,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                        Expanded(
+                          child: Center(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: Hero(
+                                  tag: 'album_art_${song.id}',
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: song.hasNetworkImage
+                                        ? Image.network(
+                                            song.imageUrl!,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) =>
+                                                _fallbackArtwork(song),
+                                          )
+                                        : _fallbackArtwork(song),
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    song.artist,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.6),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            ListenableBuilder(
-                              listenable: player,
-                              builder: (context, child) => IconButton(
-                                onPressed: () => player.toggleFavorite(song),
-                                icon: Icon(
-                                  player.isFavorite(song)
-                                      ? Icons.favorite_rounded
-                                      : Icons.favorite_border_rounded,
-                                  color: player.isFavorite(song)
-                                      ? const Color(0xFFE040FB)
-                                      : Colors.white60,
-                                  size: 28,
                                 ),
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      song.title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      song.artist,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.6),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              ListenableBuilder(
+                                listenable: player,
+                                builder: (context, child) => IconButton(
+                                  onPressed: () => player.toggleFavorite(song),
+                                  icon: Icon(
+                                    player.isFavorite(song)
+                                        ? Icons.favorite_rounded
+                                        : Icons.favorite_border_rounded,
+                                    color: player.isFavorite(song)
+                                        ? const Color(0xFFE040FB)
+                                        : Colors.white60,
+                                    size: 28,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
 
                 // ─── Controls zone (slider + playback buttons) ───
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
