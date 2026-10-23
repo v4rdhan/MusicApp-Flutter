@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/material.dart' hide RepeatMode;
+import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import '../models/song.dart';
+import '../models/song.dart' hide RepeatMode;
+import '../models/song.dart' as models;
 import 'audio_handler.dart';
 import 'storage_service.dart';
 
@@ -29,7 +30,7 @@ class MusicPlayerController extends ChangeNotifier {
   Duration _duration = Duration.zero;
   double _volume = 0.75;
   bool _shuffleOn = false;
-  RepeatMode _repeatMode = RepeatMode.off;
+  models.RepeatMode _repeatMode = models.RepeatMode.off;
   bool _isBuffering = false;
   List<Song> _favorites = [];
   List<Song> _recentlyPlayed = [];
@@ -50,7 +51,7 @@ class MusicPlayerController extends ChangeNotifier {
   Duration get duration => _duration;
   double get volume => _volume;
   bool get shuffleOn => _shuffleOn;
-  RepeatMode get repeatMode => _repeatMode;
+  models.RepeatMode get repeatMode => _repeatMode;
   List<Song> get favorites => _favorites;
   List<Song> get recentlyPlayed => _recentlyPlayed;
   bool get hasSong => _currentSong != null;
@@ -128,7 +129,7 @@ class MusicPlayerController extends ChangeNotifier {
   }
 
   void _handleTrackCompletion() {
-    if (_repeatMode == RepeatMode.one) {
+    if (_repeatMode == models.RepeatMode.one) {
       // Replay the same song
       if (_currentSong != null) {
         _audioHandler.seek(Duration.zero);
@@ -154,6 +155,17 @@ class MusicPlayerController extends ChangeNotifier {
 
     _addToRecentlyPlayed(song);
     _audioHandler.playSong(song);
+    notifyListeners();
+  }
+
+  void addToQueue(Song song) {
+    _queue.add(song);
+    notifyListeners();
+  }
+
+  void addSongToPlaylist(Playlist playlist, Song song) {
+    if (playlist.songIds.contains(song.id)) return;
+    playlist.songIds.add(song.id);
     notifyListeners();
   }
 
@@ -184,7 +196,7 @@ class MusicPlayerController extends ChangeNotifier {
     } else {
       _currentIndex++;
       if (_currentIndex >= _queue.length) {
-        if (_repeatMode == RepeatMode.all) {
+        if (_repeatMode == models.RepeatMode.all) {
           _currentIndex = 0;
         } else {
           _currentIndex = _queue.length - 1;
@@ -211,7 +223,7 @@ class MusicPlayerController extends ChangeNotifier {
 
     _currentIndex--;
     if (_currentIndex < 0) {
-      if (_repeatMode == RepeatMode.all) {
+      if (_repeatMode == models.RepeatMode.all) {
         _currentIndex = _queue.length - 1;
       } else {
         _currentIndex = 0;
@@ -247,14 +259,14 @@ class MusicPlayerController extends ChangeNotifier {
 
   void toggleRepeat() {
     switch (_repeatMode) {
-      case RepeatMode.off:
-        _repeatMode = RepeatMode.all;
+      case models.RepeatMode.off:
+        _repeatMode = models.RepeatMode.all;
         break;
-      case RepeatMode.all:
-        _repeatMode = RepeatMode.one;
+      case models.RepeatMode.all:
+        _repeatMode = models.RepeatMode.one;
         break;
-      case RepeatMode.one:
-        _repeatMode = RepeatMode.off;
+      case models.RepeatMode.one:
+        _repeatMode = models.RepeatMode.off;
         break;
     }
     notifyListeners();

@@ -10,35 +10,9 @@ class AppShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.white.withOpacity(0.06),
-      highlightColor: Colors.white.withOpacity(0.12),
+      baseColor: Colors.white.withValues(alpha: 0.06),
+      highlightColor: Colors.white.withValues(alpha: 0.12),
       child: child,
-    );
-  }
-}
-
-// ─── Skeleton Shapes ────────────────────────────────────────────────────────
-
-class _SkeletonBox extends StatelessWidget {
-  final double width;
-  final double height;
-  final double borderRadius;
-
-  const _SkeletonBox({
-    required this.width,
-    required this.height,
-    this.borderRadius = 12,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
     );
   }
 }
@@ -57,7 +31,7 @@ class FeaturedHeroSkeleton extends StatelessWidget {
           height: 200,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.white.withOpacity(0.08),
+            color: Colors.white.withValues(alpha: 0.08),
           ),
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -69,7 +43,7 @@ class FeaturedHeroSkeleton extends StatelessWidget {
                   width: 130,
                   height: 20,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
@@ -78,7 +52,7 @@ class FeaturedHeroSkeleton extends StatelessWidget {
                   width: 200,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
@@ -87,7 +61,7 @@ class FeaturedHeroSkeleton extends StatelessWidget {
                   width: 160,
                   height: 14,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
@@ -124,7 +98,7 @@ class QuickPicksGridSkeleton extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.white.withOpacity(0.08),
+                  color: Colors.white.withValues(alpha: 0.08),
                 ),
                 child: Row(
                   children: [
@@ -135,7 +109,7 @@ class QuickPicksGridSkeleton extends StatelessWidget {
                           topLeft: Radius.circular(9),
                           bottomLeft: Radius.circular(9),
                         ),
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.1),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -144,7 +118,7 @@ class QuickPicksGridSkeleton extends StatelessWidget {
                         height: 13,
                         margin: const EdgeInsets.only(right: 12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
+                          color: Colors.white.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
@@ -183,7 +157,7 @@ class HorizontalCardListSkeleton extends StatelessWidget {
               margin: const EdgeInsets.only(right: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -194,7 +168,7 @@ class HorizontalCardListSkeleton extends StatelessWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
@@ -203,7 +177,7 @@ class HorizontalCardListSkeleton extends StatelessWidget {
                       width: 100,
                       height: 14,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
@@ -212,7 +186,7 @@ class HorizontalCardListSkeleton extends StatelessWidget {
                       width: 70,
                       height: 11,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
@@ -249,7 +223,7 @@ class SongTileListSkeleton extends StatelessWidget {
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.08),
+                    color: Colors.white.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
@@ -263,7 +237,7 @@ class SongTileListSkeleton extends StatelessWidget {
                         width: 140,
                         height: 14,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
@@ -272,7 +246,7 @@ class SongTileListSkeleton extends StatelessWidget {
                         width: 100,
                         height: 11,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
@@ -284,7 +258,7 @@ class SongTileListSkeleton extends StatelessWidget {
                   width: 32,
                   height: 12,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.08),
+                    color: Colors.white.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -316,9 +290,9 @@ class SectionError extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         border: Border.all(
-          color: const Color(0xFFE91E63).withOpacity(0.2),
+          color: const Color(0xFFE91E63).withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -326,7 +300,7 @@ class SectionError extends StatelessWidget {
         children: [
           Icon(
             Icons.wifi_off_rounded,
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha: 0.4),
             size: 32,
           ),
           const SizedBox(height: 10),
@@ -334,7 +308,7 @@ class SectionError extends StatelessWidget {
             message,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withValues(alpha: 0.5),
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),

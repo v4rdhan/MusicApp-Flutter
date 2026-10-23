@@ -139,10 +139,10 @@ class _SearchScreenState extends State<SearchScreen> {
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.06),
+                  color: Colors.white.withValues(alpha: 0.06),
                 ),
               ),
               child: TextField(
@@ -152,11 +152,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 decoration: InputDecoration(
                   hintText: 'Songs, artists, or albums',
                   hintStyle: TextStyle(
-                    color: Colors.white.withOpacity(0.35),
+                    color: Colors.white.withValues(alpha: 0.35),
                     fontSize: 15,
                   ),
                   prefixIcon: Icon(Icons.search_rounded,
-                      color: Colors.white.withOpacity(0.5)),
+                      color: Colors.white.withValues(alpha: 0.5)),
                   suffixIcon: _query.isNotEmpty
                       ? IconButton(
                           onPressed: () {
@@ -164,7 +164,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             _onSearch('');
                           },
                           icon: Icon(Icons.close_rounded,
-                              color: Colors.white.withOpacity(0.5)),
+                              color: Colors.white.withValues(alpha: 0.5)),
                         )
                       : null,
                   border: InputBorder.none,
@@ -193,7 +193,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         Text(
                           'Searching...',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                             fontSize: 14,
                           ),
                         ),
@@ -222,7 +222,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               ? 'No songs found for "$_query"'
                               : '${_results.length} result${_results.length == 1 ? '' : 's'}',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -284,7 +284,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               angle: 0.3,
                               child: Icon(cat.icon,
                                   size: 60,
-                                  color: Colors.white.withOpacity(0.15)),
+                                  color: Colors.white.withValues(alpha: 0.15)),
                             ),
                           ),
                           Padding(
@@ -327,7 +327,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   const SizedBox(width: 8),
                   Icon(Icons.trending_up_rounded,
-                      color: const Color(0xFF6C63FF).withOpacity(0.7),
+                      color: const Color(0xFF6C63FF).withValues(alpha: 0.7),
                       size: 20),
                 ],
               ),
@@ -349,7 +349,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       Text(
                         'Loading trending songs...',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.4),
+                          color: Colors.white.withValues(alpha: 0.4),
                           fontSize: 13,
                         ),
                       ),
@@ -368,12 +368,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: Column(
                     children: [
                       Icon(Icons.cloud_off_rounded,
-                          color: Colors.white.withOpacity(0.3), size: 36),
+                          color: Colors.white.withValues(alpha: 0.3), size: 36),
                       const SizedBox(height: 12),
                       Text(
                         _topSongsError!,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
+                          color: Colors.white.withValues(alpha: 0.5),
                           fontSize: 13,
                         ),
                         textAlign: TextAlign.center,
@@ -413,14 +413,14 @@ class _SearchScreenState extends State<SearchScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
                           color: const Color(0xFF6C63FF)
-                              .withOpacity(index < 3 ? 0.2 : 0.08),
+                              .withValues(alpha: index < 3 ? 0.2 : 0.08),
                         ),
                         child: Text(
                           '${index + 1}',
                           style: TextStyle(
                             color: index < 3
                                 ? const Color(0xFF6C63FF)
-                                : Colors.white.withOpacity(0.4),
+                                : Colors.white.withValues(alpha: 0.4),
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
                           ),

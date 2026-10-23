@@ -220,10 +220,10 @@ class _MiniPlayerHeader extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               color: const Color(0xFF1A1A2E),
-              border: Border.all(color: Colors.white.withOpacity(0.06)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                   blurRadius: 16,
                   offset: const Offset(0, 4),
                 ),
@@ -240,7 +240,7 @@ class _MiniPlayerHeader extends StatelessWidget {
                       painter: _MiniPlayerProgressPainter(
                         progress: progress,
                         color: song.artGradient.first,
-                        backgroundColor: Colors.white.withOpacity(0.06),
+                        backgroundColor: Colors.white.withValues(alpha: 0.06),
                       ),
                     ),
                   ),
@@ -277,7 +277,7 @@ class _MiniPlayerHeader extends StatelessWidget {
                                 Text(
                                   song.artist,
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.5),
+                                    color: Colors.white.withValues(alpha: 0.5),
                                     fontSize: 12,
                                   ),
                                   maxLines: 1,

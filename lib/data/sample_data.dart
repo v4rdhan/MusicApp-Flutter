@@ -20,183 +20,183 @@ const _gLavender = [Color(0xFFA18CD1), Color(0xFFFBC2EB)];
 
 // ─── Songs ─────────────────────────────────────────────────────────────────
 final List<Song> allSongs = [
-  Song(
+  const Song(
     id: 's1',
     title: 'Midnight Dreams',
     artist: 'Luna Echo',
     album: 'Midnight Dreams',
-    duration: const Duration(minutes: 3, seconds: 45),
+    duration: Duration(minutes: 3, seconds: 45),
     artGradient: _gDeepPurple,
     artIcon: Icons.nightlight_round,
   ),
-  Song(
+  const Song(
     id: 's2',
     title: 'Electric Pulse',
     artist: 'Neon Waves',
     album: 'Electric Vibes',
-    duration: const Duration(minutes: 4, seconds: 12),
+    duration: Duration(minutes: 4, seconds: 12),
     artGradient: _gPinkOrange,
     artIcon: Icons.electric_bolt,
   ),
-  Song(
+  const Song(
     id: 's3',
     title: 'Golden Hour',
     artist: 'Sunset Drive',
     album: 'Golden Collection',
-    duration: const Duration(minutes: 3, seconds: 28),
+    duration: Duration(minutes: 3, seconds: 28),
     artGradient: _gOrangeYellow,
     artIcon: Icons.wb_sunny,
   ),
-  Song(
+  const Song(
     id: 's4',
     title: 'Starlight Serenade',
     artist: 'Cosmic Drift',
     album: 'Cosmic Journey',
-    duration: const Duration(minutes: 5, seconds: 3),
+    duration: Duration(minutes: 5, seconds: 3),
     artGradient: _gPurpleBlue,
     artIcon: Icons.star,
   ),
-  Song(
+  const Song(
     id: 's5',
     title: 'Ocean Waves',
     artist: 'Azure Tide',
     album: 'Deep Waters',
-    duration: const Duration(minutes: 4, seconds: 37),
+    duration: Duration(minutes: 4, seconds: 37),
     artGradient: _gCyanTeal,
     artIcon: Icons.waves,
   ),
-  Song(
+  const Song(
     id: 's6',
     title: 'City Lights',
     artist: 'Metro Beats',
     album: 'Urban Pulse',
-    duration: const Duration(minutes: 3, seconds: 15),
+    duration: Duration(minutes: 3, seconds: 15),
     artGradient: _gAmberRed,
     artIcon: Icons.location_city,
   ),
-  Song(
+  const Song(
     id: 's7',
     title: 'Velvet Sky',
     artist: 'Aurora Sound',
     album: 'Northern Lights',
-    duration: const Duration(minutes: 4, seconds: 52),
+    duration: Duration(minutes: 4, seconds: 52),
     artGradient: _gLavender,
     artIcon: Icons.cloud,
   ),
-  Song(
+  const Song(
     id: 's8',
     title: 'Digital Rain',
     artist: 'Cyber Flux',
     album: 'Binary World',
-    duration: const Duration(minutes: 3, seconds: 58),
+    duration: Duration(minutes: 3, seconds: 58),
     artGradient: _gGreenCyan,
     artIcon: Icons.code,
   ),
-  Song(
+  const Song(
     id: 's9',
     title: 'Summer Breeze',
     artist: 'Tropical Haze',
     album: 'Island Vibes',
-    duration: const Duration(minutes: 3, seconds: 33),
+    duration: Duration(minutes: 3, seconds: 33),
     artGradient: _gForest,
     artIcon: Icons.beach_access,
   ),
-  Song(
+  const Song(
     id: 's10',
     title: 'Neon Nights',
     artist: 'Synth Valley',
     album: 'Synthwave Dreams',
-    duration: const Duration(minutes: 4, seconds: 45),
+    duration: Duration(minutes: 4, seconds: 45),
     artGradient: _gRedPink,
     artIcon: Icons.nightlife,
   ),
-  Song(
+  const Song(
     id: 's11',
     title: 'Crystal Clear',
     artist: 'Diamond Echo',
     album: 'Reflections',
-    duration: const Duration(minutes: 3, seconds: 22),
+    duration: Duration(minutes: 3, seconds: 22),
     artGradient: _gTealBlue,
     artIcon: Icons.diamond,
   ),
-  Song(
+  const Song(
     id: 's12',
     title: 'Fade Away',
     artist: 'Ghost Signal',
     album: 'Phantom Frequencies',
-    duration: const Duration(minutes: 4, seconds: 8),
+    duration: Duration(minutes: 4, seconds: 8),
     artGradient: _gMidnight,
     artIcon: Icons.blur_on,
   ),
-  Song(
+  const Song(
     id: 's13',
     title: 'Rise Up',
     artist: 'Phoenix Fire',
     album: 'Ashes to Flames',
-    duration: const Duration(minutes: 3, seconds: 55),
+    duration: Duration(minutes: 3, seconds: 55),
     artGradient: _gSunset,
     artIcon: Icons.local_fire_department,
   ),
-  Song(
+  const Song(
     id: 's14',
     title: 'Deep Blue',
     artist: 'Ocean Floor',
     album: 'Abyssal Zone',
-    duration: const Duration(minutes: 5, seconds: 17),
+    duration: Duration(minutes: 5, seconds: 17),
     artGradient: _gIndigoPurple,
     artIcon: Icons.water,
   ),
-  Song(
+  const Song(
     id: 's15',
     title: 'Wild Heart',
     artist: 'Thunder Chase',
     album: 'Storm Riders',
-    duration: const Duration(minutes: 3, seconds: 41),
+    duration: Duration(minutes: 3, seconds: 41),
     artGradient: _gRosePink,
     artIcon: Icons.favorite,
   ),
-  Song(
+  const Song(
     id: 's16',
     title: 'Lunar Eclipse',
     artist: 'Luna Echo',
     album: 'Midnight Dreams',
-    duration: const Duration(minutes: 4, seconds: 23),
+    duration: Duration(minutes: 4, seconds: 23),
     artGradient: _gDeepPurple,
     artIcon: Icons.dark_mode,
   ),
-  Song(
+  const Song(
     id: 's17',
     title: 'Voltage',
     artist: 'Neon Waves',
     album: 'Electric Vibes',
-    duration: const Duration(minutes: 3, seconds: 38),
+    duration: Duration(minutes: 3, seconds: 38),
     artGradient: _gPinkOrange,
     artIcon: Icons.flash_on,
   ),
-  Song(
+  const Song(
     id: 's18',
     title: 'Dusk till Dawn',
     artist: 'Sunset Drive',
     album: 'Golden Collection',
-    duration: const Duration(minutes: 4, seconds: 5),
+    duration: Duration(minutes: 4, seconds: 5),
     artGradient: _gOrangeYellow,
     artIcon: Icons.wb_twilight,
   ),
-  Song(
+  const Song(
     id: 's19',
     title: 'Nebula',
     artist: 'Cosmic Drift',
     album: 'Cosmic Journey',
-    duration: const Duration(minutes: 6, seconds: 12),
+    duration: Duration(minutes: 6, seconds: 12),
     artGradient: _gPurpleBlue,
     artIcon: Icons.auto_awesome,
   ),
-  Song(
+  const Song(
     id: 's20',
     title: 'Coral Reef',
     artist: 'Azure Tide',
     album: 'Deep Waters',
-    duration: const Duration(minutes: 3, seconds: 49),
+    duration: Duration(minutes: 3, seconds: 49),
     artGradient: _gCyanTeal,
     artIcon: Icons.sailing,
   ),
@@ -204,7 +204,7 @@ final List<Song> allSongs = [
 
 // ─── Albums ────────────────────────────────────────────────────────────────
 final List<Album> allAlbums = [
-  Album(
+  const Album(
     id: 'a1',
     title: 'Midnight Dreams',
     artist: 'Luna Echo',
@@ -212,7 +212,7 @@ final List<Album> allAlbums = [
     artIcon: Icons.nightlight_round,
     songIds: ['s1', 's16'],
   ),
-  Album(
+  const Album(
     id: 'a2',
     title: 'Electric Vibes',
     artist: 'Neon Waves',
@@ -220,7 +220,7 @@ final List<Album> allAlbums = [
     artIcon: Icons.electric_bolt,
     songIds: ['s2', 's17'],
   ),
-  Album(
+  const Album(
     id: 'a3',
     title: 'Golden Collection',
     artist: 'Sunset Drive',
@@ -228,7 +228,7 @@ final List<Album> allAlbums = [
     artIcon: Icons.wb_sunny,
     songIds: ['s3', 's18'],
   ),
-  Album(
+  const Album(
     id: 'a4',
     title: 'Cosmic Journey',
     artist: 'Cosmic Drift',
@@ -236,7 +236,7 @@ final List<Album> allAlbums = [
     artIcon: Icons.star,
     songIds: ['s4', 's19'],
   ),
-  Album(
+  const Album(
     id: 'a5',
     title: 'Deep Waters',
     artist: 'Azure Tide',
@@ -244,7 +244,7 @@ final List<Album> allAlbums = [
     artIcon: Icons.waves,
     songIds: ['s5', 's20'],
   ),
-  Album(
+  const Album(
     id: 'a6',
     title: 'Urban Pulse',
     artist: 'Metro Beats',
@@ -252,7 +252,7 @@ final List<Album> allAlbums = [
     artIcon: Icons.location_city,
     songIds: ['s6'],
   ),
-  Album(
+  const Album(
     id: 'a7',
     title: 'Northern Lights',
     artist: 'Aurora Sound',
@@ -260,7 +260,7 @@ final List<Album> allAlbums = [
     artIcon: Icons.cloud,
     songIds: ['s7'],
   ),
-  Album(
+  const Album(
     id: 'a8',
     title: 'Storm Riders',
     artist: 'Thunder Chase',
@@ -272,7 +272,7 @@ final List<Album> allAlbums = [
 
 // ─── Playlists ─────────────────────────────────────────────────────────────
 final List<Playlist> allPlaylists = [
-  Playlist(
+  const Playlist(
     id: 'p1',
     title: 'Chill Vibes',
     description: 'Relax and unwind',
@@ -280,7 +280,7 @@ final List<Playlist> allPlaylists = [
     artIcon: Icons.spa,
     songIds: ['s5', 's7', 's9', 's11', 's14'],
   ),
-  Playlist(
+  const Playlist(
     id: 'p2',
     title: 'Workout Energy',
     description: 'Push your limits',
@@ -288,7 +288,7 @@ final List<Playlist> allPlaylists = [
     artIcon: Icons.fitness_center,
     songIds: ['s2', 's6', 's10', 's13', 's15'],
   ),
-  Playlist(
+  const Playlist(
     id: 'p3',
     title: 'Late Night Drives',
     description: 'Cruise through the city',
@@ -296,7 +296,7 @@ final List<Playlist> allPlaylists = [
     artIcon: Icons.directions_car,
     songIds: ['s1', 's4', 's10', 's12', 's16'],
   ),
-  Playlist(
+  const Playlist(
     id: 'p4',
     title: 'Focus & Study',
     description: 'Concentrate deeply',
@@ -304,7 +304,7 @@ final List<Playlist> allPlaylists = [
     artIcon: Icons.psychology,
     songIds: ['s8', 's11', 's14', 's19', 's20'],
   ),
-  Playlist(
+  const Playlist(
     id: 'p5',
     title: 'Party Mix',
     description: 'Turn up the volume',
@@ -312,7 +312,7 @@ final List<Playlist> allPlaylists = [
     artIcon: Icons.celebration,
     songIds: ['s2', 's3', 's6', 's10', 's13', 's15', 's17'],
   ),
-  Playlist(
+  const Playlist(
     id: 'p6',
     title: 'Acoustic Soul',
     description: 'Raw and authentic',
@@ -336,18 +336,18 @@ class BrowseCategory {
 }
 
 final List<BrowseCategory> browseCategories = [
-  BrowseCategory(title: 'Pop', gradient: _gPinkOrange, icon: Icons.music_note),
-  BrowseCategory(title: 'Rock', gradient: _gRedPink, icon: Icons.music_note_rounded),
-  BrowseCategory(title: 'Hip Hop', gradient: _gAmberRed, icon: Icons.headphones),
-  BrowseCategory(title: 'Electronic', gradient: _gPurpleBlue, icon: Icons.equalizer),
-  BrowseCategory(title: 'Jazz', gradient: _gOrangeYellow, icon: Icons.piano),
-  BrowseCategory(title: 'Classical', gradient: _gLavender, icon: Icons.library_music),
-  BrowseCategory(title: 'R&B', gradient: _gDeepPurple, icon: Icons.mic),
-  BrowseCategory(title: 'Indie', gradient: _gForest, icon: Icons.landscape),
-  BrowseCategory(title: 'Country', gradient: _gSunset, icon: Icons.park),
-  BrowseCategory(title: 'Latin', gradient: _gRosePink, icon: Icons.local_fire_department),
-  BrowseCategory(title: 'Ambient', gradient: _gMidnight, icon: Icons.nightlight),
-  BrowseCategory(title: 'Lo-Fi', gradient: _gTealBlue, icon: Icons.headset),
+  const BrowseCategory(title: 'Pop', gradient: _gPinkOrange, icon: Icons.music_note),
+  const BrowseCategory(title: 'Rock', gradient: _gRedPink, icon: Icons.music_note_rounded),
+  const BrowseCategory(title: 'Hip Hop', gradient: _gAmberRed, icon: Icons.headphones),
+  const BrowseCategory(title: 'Electronic', gradient: _gPurpleBlue, icon: Icons.equalizer),
+  const BrowseCategory(title: 'Jazz', gradient: _gOrangeYellow, icon: Icons.piano),
+  const BrowseCategory(title: 'Classical', gradient: _gLavender, icon: Icons.library_music),
+  const BrowseCategory(title: 'R&B', gradient: _gDeepPurple, icon: Icons.mic),
+  const BrowseCategory(title: 'Indie', gradient: _gForest, icon: Icons.landscape),
+  const BrowseCategory(title: 'Country', gradient: _gSunset, icon: Icons.park),
+  const BrowseCategory(title: 'Latin', gradient: _gRosePink, icon: Icons.local_fire_department),
+  const BrowseCategory(title: 'Ambient', gradient: _gMidnight, icon: Icons.nightlight),
+  const BrowseCategory(title: 'Lo-Fi', gradient: _gTealBlue, icon: Icons.headset),
 ];
 
 // ─── Helper ────────────────────────────────────────────────────────────────
