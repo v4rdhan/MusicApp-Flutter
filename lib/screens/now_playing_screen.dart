@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; hide RepeatMode;
 import '../models/song.dart';
 import '../services/player_controller.dart';
 import '../widgets/common_widgets.dart';
