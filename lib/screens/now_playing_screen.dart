@@ -1,8 +1,9 @@
 import 'dart:ui';
-import 'package:flutter/material.dart' hide RepeatMode;
+import 'package:flutter/material.dart';
 import '../models/song.dart';
 import '../services/player_controller.dart';
 import '../widgets/common_widgets.dart';
+import '../widgets/queue_bottom_sheet.dart';
 
 class NowPlayingScreen extends StatelessWidget {
   const NowPlayingScreen({
@@ -243,7 +244,7 @@ class NowPlayingScreen extends StatelessWidget {
                             SliderTheme(
                               data: SliderTheme.of(context).copyWith(
                                 trackShape:
-                                    const RectangularSliderTrackShape(),
+                                    const _FullWidthSliderTrackShape(),
                                 trackHeight: 3.5,
                                 thumbShape: const RoundSliderThumbShape(
                                     enabledThumbRadius: 5.5),
@@ -381,7 +382,13 @@ class NowPlayingScreen extends StatelessWidget {
                               color: Colors.white70,
                             ),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () => showModalBottomSheet<void>(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (_) =>
+                                    QueueBottomSheet(player: player),
+                              ),
                               icon: const Icon(Icons.queue_music_outlined),
                               color: Colors.white70,
                             ),
@@ -396,6 +403,27 @@ class NowPlayingScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _FullWidthSliderTrackShape extends RectangularSliderTrackShape {
+  const _FullWidthSliderTrackShape();
+
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final trackHeight = sliderTheme.trackHeight ?? 2;
+    return Rect.fromLTWH(
+      offset.dx,
+      offset.dy + (parentBox.size.height - trackHeight) / 2,
+      parentBox.size.width,
+      trackHeight,
     );
   }
 }
