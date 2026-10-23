@@ -3,6 +3,7 @@ import '../data/sample_data.dart';
 import '../models/song.dart';
 import '../services/player_controller.dart';
 import '../widgets/common_widgets.dart';
+import '../widgets/song_options_sheet.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -299,31 +300,18 @@ class _LibraryScreenState extends State<LibraryScreen>
               final song = player.favorites[index];
               final isCurrentSong =
                   player.currentSong?.id == song.id && player.isPlaying;
-              return Dismissible(
-                key: ValueKey('fav_${song.id}'),
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 24),
-                  color: Colors.redAccent.withOpacity(0.15),
-                  child: const Icon(Icons.delete_outline_rounded,
-                      color: Colors.redAccent),
-                ),
-                onDismissed: (_) => player.toggleFavorite(song),
-                child: SongTile(
-                  song: song,
-                  isPlaying: isCurrentSong,
-                  onTap: () =>
-                      player.playSong(song, playlist: player.favorites),
-                  trailing: IconButton(
-                    onPressed: () => player.toggleFavorite(song),
-                    icon: const Icon(Icons.favorite_rounded,
-                        color: Color(0xFFE040FB), size: 20),
-                    iconSize: 20,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                        minWidth: 32, minHeight: 32),
-                  ),
+              return SongTile(
+                song: song,
+                isPlaying: isCurrentSong,
+                onTap: () =>
+                    player.playSong(song, playlist: player.favorites),
+                trailing: IconButton(
+                  onPressed: () => showSongOptionsSheet(context, song),
+                  icon: const Icon(Icons.more_vert),
+                  iconSize: 20,
+                  padding: EdgeInsets.zero,
+                  constraints:
+                      const BoxConstraints(minWidth: 32, minHeight: 32),
                 ),
               );
             },

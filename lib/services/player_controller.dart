@@ -157,6 +157,17 @@ class MusicPlayerController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addToQueue(Song song) {
+    _queue.add(song);
+    notifyListeners();
+  }
+
+  void addSongToPlaylist(Playlist playlist, Song song) {
+    if (playlist.songIds.contains(song.id)) return;
+    playlist.songIds.add(song.id);
+    notifyListeners();
+  }
+
   void togglePlayPause() {
     if (_currentSong == null) return;
     if (_isPlaying) {
