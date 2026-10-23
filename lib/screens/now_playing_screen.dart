@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../models/song.dart';
+import '../models/song.dart' as models;
 import '../services/player_controller.dart';
 import '../widgets/queue_bottom_sheet.dart';
 
@@ -26,7 +26,7 @@ class NowPlayingScreen extends StatelessWidget {
     return '$m:${s.toString().padLeft(2, '0')}';
   }
 
-  Widget _fallbackArtwork(Song song) {
+  Widget _fallbackArtwork(models.Song song) {
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: song.artGradient),
@@ -346,11 +346,11 @@ class NowPlayingScreen extends StatelessWidget {
                             IconButton(
                               onPressed: player.toggleRepeat,
                               icon: Icon(
-                                player.repeatMode == RepeatMode.one
+                                player.repeatMode == models.RepeatMode.one
                                     ? Icons.repeat_one_rounded
                                     : Icons.repeat_rounded,
                                 color:
-                                    player.repeatMode != RepeatMode.off
+                                    player.repeatMode != models.RepeatMode.off
                                         ? song.artGradient.first
                                         : Colors.white54,
                               ),
