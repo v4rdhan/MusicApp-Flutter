@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../models/song.dart';
 import '../services/player_controller.dart';
 import 'common_widgets.dart';
 

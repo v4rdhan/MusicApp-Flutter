@@ -226,10 +226,10 @@ class SectionHeader extends StatelessWidget {
           if (onSeeAll != null)
             GestureDetector(
               onTap: onSeeAll,
-              child: Text(
+              child: const Text(
                 'See All',
                 style: TextStyle(
-                  color: const Color(0xFF6C63FF),
+                  color: Color(0xFF6C63FF),
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),

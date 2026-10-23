@@ -94,6 +94,7 @@ class _SongOptionsSheet extends StatelessWidget {
       ),
     );
 
+    if (!context.mounted) return;
     if (confirmed == true) {
       player.toggleFavorite(song);
       Navigator.pop(context);

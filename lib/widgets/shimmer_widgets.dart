@@ -17,32 +17,6 @@ class AppShimmer extends StatelessWidget {
   }
 }
 
-// ─── Skeleton Shapes ────────────────────────────────────────────────────────
-
-class _SkeletonBox extends StatelessWidget {
-  final double width;
-  final double height;
-  final double borderRadius;
-
-  const _SkeletonBox({
-    required this.width,
-    required this.height,
-    this.borderRadius = 12,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-    );
-  }
-}
-
 // ─── Featured Hero Skeleton ─────────────────────────────────────────────────
 
 class FeaturedHeroSkeleton extends StatelessWidget {
