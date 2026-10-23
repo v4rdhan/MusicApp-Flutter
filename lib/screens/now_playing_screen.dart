@@ -1,8 +1,7 @@
 import 'dart:ui';
-import 'package:flutter/material.dart'; hide RepeatMode;
+import 'package:flutter/material.dart';
 import '../models/song.dart';
 import '../services/player_controller.dart';
-import '../widgets/common_widgets.dart';
 import '../widgets/queue_bottom_sheet.dart';
 
 class NowPlayingScreen extends StatelessWidget {
