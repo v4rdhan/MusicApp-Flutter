@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? 'What do you want to listen to?'
                       : 'Music picked for ${viewModel.languages.join(', ')}',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -220,7 +220,7 @@ class _EmptySection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Text(
         message,
-        style: TextStyle(color: Colors.white.withOpacity(0.5)),
+        style: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
       ),
     );
   }

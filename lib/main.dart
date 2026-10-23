@@ -93,8 +93,8 @@ class _MusicAppState extends State<MusicApp> {
             ),
             useMaterial3: true,
             fontFamily: 'Roboto',
-            splashColor: const Color(0xFF6C63FF).withOpacity(0.08),
-            highlightColor: Colors.white.withOpacity(0.03),
+            splashColor: const Color(0xFF6C63FF).withValues(alpha: 0.08),
+            highlightColor: Colors.white.withValues(alpha: 0.03),
           ),
           home: _RootRouter(storageService: widget.storageService),
         ),
@@ -172,7 +172,7 @@ class _AppShellState extends State<AppShell> {
                   center: Alignment.topRight,
                   radius: 1.5,
                   colors: [
-                    const Color(0xFF6C63FF).withOpacity(0.06),
+                    const Color(0xFF6C63FF).withValues(alpha: 0.06),
                     Colors.transparent,
                   ],
                 ),
@@ -200,10 +200,10 @@ class _AppShellState extends State<AppShell> {
                 // Bottom Navigation
                 Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0A0A0F).withOpacity(0.95),
+                    color: const Color(0xFF0A0A0F).withValues(alpha: 0.95),
                     border: Border(
                       top: BorderSide(
-                        color: Colors.white.withOpacity(0.06),
+                        color: Colors.white.withValues(alpha: 0.06),
                       ),
                     ),
                   ),
@@ -291,14 +291,14 @@ class _NavItem extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: isSelected
-                    ? const Color(0xFF6C63FF).withOpacity(0.15)
+                    ? const Color(0xFF6C63FF).withValues(alpha: 0.15)
                     : Colors.transparent,
               ),
               child: Icon(
                 icon,
                 color: isSelected
                     ? const Color(0xFF6C63FF)
-                    : Colors.white.withOpacity(0.4),
+                    : Colors.white.withValues(alpha: 0.4),
                 size: 24,
               ),
             ),
@@ -308,7 +308,7 @@ class _NavItem extends StatelessWidget {
               style: TextStyle(
                 color: isSelected
                     ? const Color(0xFF6C63FF)
-                    : Colors.white.withOpacity(0.4),
+                    : Colors.white.withValues(alpha: 0.4),
                 fontSize: 11,
                 fontWeight:
                     isSelected ? FontWeight.w600 : FontWeight.w500,

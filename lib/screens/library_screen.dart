@@ -71,7 +71,7 @@ class _LibraryScreenState extends State<LibraryScreen>
             indicatorSize: TabBarIndicatorSize.label,
             indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: const Color(0xFF6C63FF).withOpacity(0.2),
+              color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
             ),
             dividerColor: Colors.transparent,
             tabAlignment: TabAlignment.start,
@@ -153,12 +153,12 @@ class _LibraryScreenState extends State<LibraryScreen>
             child: Row(
               children: [
                 Icon(Icons.history_rounded,
-                    color: Colors.white.withOpacity(0.3), size: 16),
+                    color: Colors.white.withValues(alpha: 0.3), size: 16),
                 const SizedBox(width: 8),
                 Text(
                   'All Recently Played',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.3,
@@ -167,7 +167,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Divider(
-                    color: Colors.white.withOpacity(0.06),
+                    color: Colors.white.withValues(alpha: 0.06),
                     height: 1,
                   ),
                 ),
@@ -198,7 +198,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                         : Icons.favorite_border_rounded,
                     color: player.isFavorite(song)
                         ? const Color(0xFFE040FB)
-                        : Colors.white.withOpacity(0.3),
+                        : Colors.white.withValues(alpha: 0.3),
                     size: 20,
                   ),
                   iconSize: 20,
@@ -245,7 +245,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                 Text(
                   '${player.favorites.length} saved song${player.favorites.length == 1 ? '' : 's'}',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
@@ -266,7 +266,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                         horizontal: 14, vertical: 6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: const Color(0xFF6C63FF).withOpacity(0.2),
+                      color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
@@ -370,7 +370,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                         Text(
                           '${pl.description} • ${pl.songIds.length} songs',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                             fontSize: 13,
                           ),
                         ),
@@ -378,7 +378,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                     ),
                   ),
                   Icon(Icons.play_circle_filled_rounded,
-                      color: Colors.white.withOpacity(0.3), size: 36),
+                      color: Colors.white.withValues(alpha: 0.3), size: 36),
                 ],
               ),
             ),
@@ -425,7 +425,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: album.artGradient.first.withOpacity(0.3),
+                        color: album.artGradient.first.withValues(alpha: 0.3),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
@@ -439,13 +439,13 @@ class _LibraryScreenState extends State<LibraryScreen>
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => Icon(
                               album.artIcon,
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                               size: 50,
                             ),
                           )
                         : Icon(
                             album.artIcon,
-                            color: Colors.white.withOpacity(0.3),
+                            color: Colors.white.withValues(alpha: 0.3),
                             size: 50,
                           ),
                   ),
@@ -466,7 +466,7 @@ class _LibraryScreenState extends State<LibraryScreen>
               Text(
                 album.artist,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.5),
+                  color: Colors.white.withValues(alpha: 0.5),
                   fontSize: 12,
                 ),
                 maxLines: 1,
@@ -495,19 +495,19 @@ class _LibraryScreenState extends State<LibraryScreen>
             height: 96,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.04),
+              color: Colors.white.withValues(alpha: 0.04),
               border: Border.all(
-                color: Colors.white.withOpacity(0.06),
+                color: Colors.white.withValues(alpha: 0.06),
               ),
             ),
             child: Icon(icon,
-                color: Colors.white.withOpacity(0.15), size: 44),
+                color: Colors.white.withValues(alpha: 0.15), size: 44),
           ),
           const SizedBox(height: 20),
           Text(
             title,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withValues(alpha: 0.5),
               fontSize: 18,
               fontWeight: FontWeight.w600,
             ),
@@ -518,7 +518,7 @@ class _LibraryScreenState extends State<LibraryScreen>
             child: Text(
               subtitle,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.25),
+                color: Colors.white.withValues(alpha: 0.25),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -566,7 +566,7 @@ class _RecentArtCard extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: song.artGradient.first.withOpacity(0.35),
+                      color: song.artGradient.first.withValues(alpha: 0.35),
                       blurRadius: 14,
                       offset: const Offset(0, 6),
                     ),
@@ -582,21 +582,21 @@ class _RecentArtCard extends StatelessWidget {
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => Icon(
                           song.artIcon,
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha: 0.3),
                           size: 36,
                         ),
                       )
                     else
                       Icon(
                         song.artIcon,
-                        color: Colors.white.withOpacity(0.3),
+                        color: Colors.white.withValues(alpha: 0.3),
                         size: 36,
                       ),
                     // Playing indicator overlay
                     if (isPlaying)
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.4),
+                          color: Colors.black.withValues(alpha: 0.4),
                         ),
                         child: const Center(
                           child: Icon(
@@ -627,7 +627,7 @@ class _RecentArtCard extends StatelessWidget {
             Text(
               song.artist,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.4),
+                color: Colors.white.withValues(alpha: 0.4),
                 fontSize: 11,
               ),
               maxLines: 1,

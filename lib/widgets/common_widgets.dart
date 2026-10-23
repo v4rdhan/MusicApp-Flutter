@@ -34,7 +34,7 @@ class GradientArt extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: gradient.first.withOpacity(0.4),
+            color: gradient.first.withValues(alpha: 0.4),
             blurRadius: size * 0.3,
             offset: Offset(0, size * 0.1),
           ),
@@ -45,7 +45,7 @@ class GradientArt extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Icon(icon, color: Colors.white.withOpacity(0.9), size: iconSize),
+            Icon(icon, color: Colors.white.withValues(alpha: 0.9), size: iconSize),
             if (imageUrl != null && imageUrl!.isNotEmpty)
               Image.network(
                 imageUrl!,
@@ -81,8 +81,8 @@ class SongTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        splashColor: song.artGradient.first.withOpacity(0.15),
-        highlightColor: Colors.white.withOpacity(0.03),
+        splashColor: song.artGradient.first.withValues(alpha: 0.15),
+        highlightColor: Colors.white.withValues(alpha: 0.03),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
@@ -117,7 +117,7 @@ class SongTile extends StatelessWidget {
                     Text(
                       '${song.artist} • ${song.album}',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.white.withValues(alpha: 0.5),
                         fontSize: 12,
                         letterSpacing: 0.2,
                       ),
@@ -135,7 +135,7 @@ class SongTile extends StatelessWidget {
               Text(
                 song.durationString,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.4),
+                  color: Colors.white.withValues(alpha: 0.4),
                   fontSize: 12,
                 ),
               ),
@@ -283,7 +283,7 @@ class HorizontalCard extends StatelessWidget {
               : null,
           boxShadow: [
             BoxShadow(
-              color: gradient.first.withOpacity(0.35),
+              color: gradient.first.withValues(alpha: 0.35),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -308,7 +308,7 @@ class HorizontalCard extends StatelessWidget {
                     ),
                     child: Icon(icon,
                         size: 48,
-                        color: Colors.white.withOpacity(0.3)),
+                        color: Colors.white.withValues(alpha: 0.3)),
                   ),
                 ),
               ),
@@ -323,7 +323,7 @@ class HorizontalCard extends StatelessWidget {
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.7),
+                        Colors.black.withValues(alpha: 0.7),
                       ],
                       stops: const [0.3, 1.0],
                     ),
@@ -339,7 +339,7 @@ class HorizontalCard extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 80,
-                  color: Colors.white.withOpacity(0.12),
+                  color: Colors.white.withValues(alpha: 0.12),
                 ),
               ),
 
@@ -369,7 +369,7 @@ class HorizontalCard extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
                     ),
@@ -411,9 +411,9 @@ class GlassContainer extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
-        color: color ?? Colors.white.withOpacity(0.06),
+        color: color ?? Colors.white.withValues(alpha: 0.06),
         border: Border.all(
-          color: Colors.white.withOpacity(0.08),
+          color: Colors.white.withValues(alpha: 0.08),
           width: 1,
         ),
       ),

@@ -48,7 +48,7 @@ class QueueBottomSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xF21A1A2E),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: SafeArea(
         top: false,
@@ -94,7 +94,7 @@ class QueueBottomSheet extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.55),
+                                color: Colors.white.withValues(alpha: 0.55),
                                 fontSize: 13,
                               ),
                             ),
@@ -115,7 +115,7 @@ class QueueBottomSheet extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.07),
+                        color: Colors.white.withValues(alpha: 0.07),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -148,7 +148,7 @@ class QueueBottomSheet extends StatelessWidget {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.55),
+                                    color: Colors.white.withValues(alpha: 0.55),
                                     fontSize: 12,
                                   ),
                                 ),
@@ -199,7 +199,7 @@ class QueueBottomSheet extends StatelessWidget {
                           child: Text(
                             'No upcoming songs',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
+                              color: Colors.white.withValues(alpha: 0.5),
                             ),
                           ),
                         )
@@ -232,12 +232,12 @@ class QueueBottomSheet extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.5),
+                                  color: Colors.white.withValues(alpha: 0.5),
                                 ),
                               ),
                               trailing: Icon(
                                 Icons.drag_handle_rounded,
-                                color: Colors.white.withOpacity(0.4),
+                                color: Colors.white.withValues(alpha: 0.4),
                               ),
                             );
                           },
@@ -304,7 +304,7 @@ class _QueueActionButton extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         minimumSize: const Size.fromHeight(46),
         side: BorderSide(
-          color: isActive ? activeColor.withOpacity(0.6) : Colors.white24,
+          color: isActive ? activeColor.withValues(alpha: 0.6) : Colors.white24,
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       ),

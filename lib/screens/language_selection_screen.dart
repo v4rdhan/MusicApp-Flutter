@@ -127,7 +127,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                 Text(
                   'Select one or more to personalize your feed',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                     fontSize: 15,
                     fontWeight: FontWeight.w400,
                   ),
@@ -164,12 +164,12 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(14),
                               color: isSelected
-                                  ? const Color(0xFF6C63FF).withOpacity(0.2)
-                                  : Colors.white.withOpacity(0.06),
+                                  ? const Color(0xFF6C63FF).withValues(alpha: 0.2)
+                                  : Colors.white.withValues(alpha: 0.06),
                               border: Border.all(
                                 color: isSelected
                                     ? const Color(0xFF6C63FF)
-                                    : Colors.white.withOpacity(0.08),
+                                    : Colors.white.withValues(alpha: 0.08),
                                 width: isSelected ? 1.5 : 1,
                               ),
                             ),
@@ -186,7 +186,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                                   style: TextStyle(
                                     color: isSelected
                                         ? Colors.white
-                                        : Colors.white.withOpacity(0.7),
+                                        : Colors.white.withValues(alpha: 0.7),
                                     fontSize: 14,
                                     fontWeight: isSelected
                                         ? FontWeight.w600
@@ -224,7 +224,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF6C63FF),
                         disabledBackgroundColor:
-                            const Color(0xFF6C63FF).withOpacity(0.3),
+                            const Color(0xFF6C63FF).withValues(alpha: 0.3),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),

@@ -107,7 +107,7 @@ class _SongOptionsSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xF21A1A2E),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: SafeArea(
         top: false,
@@ -148,7 +148,7 @@ class _SongOptionsSheet extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.55),
+                              color: Colors.white.withValues(alpha: 0.55),
                               fontSize: 12,
                             ),
                           ),

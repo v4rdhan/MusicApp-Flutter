@@ -34,7 +34,7 @@ class NowPlayingScreen extends StatelessWidget {
       child: Center(
         child: Icon(
           song.artIcon,
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha: 0.9),
           size: 72,
         ),
       ),
@@ -76,8 +76,8 @@ class NowPlayingScreen extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  song.artGradient.first.withOpacity(0.58),
-                  const Color(0xFF0A0A0F).withOpacity(0.88),
+                  song.artGradient.first.withValues(alpha: 0.58),
+                  const Color(0xFF0A0A0F).withValues(alpha: 0.88),
                   const Color(0xFF0A0A0F),
                 ],
                 stops: const [0.0, 0.45, 1.0],
@@ -121,7 +121,7 @@ class NowPlayingScreen extends StatelessWidget {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        color: Colors.white.withOpacity(0.55),
+                                        color: Colors.white.withValues(alpha: 0.55),
                                         fontSize: 11,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -199,7 +199,7 @@ class NowPlayingScreen extends StatelessWidget {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        color: Colors.white.withOpacity(0.6),
+                                        color: Colors.white.withValues(alpha: 0.6),
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -252,10 +252,10 @@ class NowPlayingScreen extends StatelessWidget {
                                         overlayRadius: 12),
                                 activeTrackColor: song.artGradient.first,
                                 inactiveTrackColor:
-                                    Colors.white.withOpacity(0.12),
+                                    Colors.white.withValues(alpha: 0.12),
                                 thumbColor: Colors.white,
                                 overlayColor: song.artGradient.first
-                                    .withOpacity(0.2),
+                                    .withValues(alpha: 0.2),
                               ),
                               child: Slider(
                                 value: player.progress.clamp(0.0, 1.0),
@@ -269,14 +269,14 @@ class NowPlayingScreen extends StatelessWidget {
                                 Text(
                                   _formatDuration(player.position),
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.5),
+                                    color: Colors.white.withValues(alpha: 0.5),
                                     fontSize: 12,
                                   ),
                                 ),
                                 Text(
                                   _formatDuration(player.duration),
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.5),
+                                    color: Colors.white.withValues(alpha: 0.5),
                                     fontSize: 12,
                                   ),
                                 ),
@@ -321,7 +321,7 @@ class NowPlayingScreen extends StatelessWidget {
                                   boxShadow: [
                                     BoxShadow(
                                       color: song.artGradient.first
-                                          .withOpacity(0.45),
+                                          .withValues(alpha: 0.45),
                                       blurRadius: 20,
                                       offset: const Offset(0, 6),
                                     ),
