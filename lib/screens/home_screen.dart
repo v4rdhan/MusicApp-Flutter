@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/song.dart';
+import '../services/api_service.dart';
 import '../services/home_view_model.dart';
 import '../services/player_controller.dart';
 import '../widgets/common_widgets.dart';
@@ -13,12 +14,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  /// Guards against scheduling duplicate initialization calls within the same
+  /// frame / dependency rebuild. It is reset whenever the viewModel's cache
+  /// expires so a fresh fetch can be triggered on the next visit.
   bool _initializationScheduled = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final viewModel = HomeViewModelProvider.of(context);
+    // If the cache has expired (or never loaded), allow a new fetch.
+    if (!viewModel.isInitialized) {
+      _initializationScheduled = false;
+    }
     if (!viewModel.isInitialized && !_initializationScheduled) {
       _initializationScheduled = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -187,6 +195,10 @@ class _HomeScreenState extends State<HomeScreen> {
         message: 'No new releases found for your languages.',
       );
     }
+
+    final player = MusicPlayerProvider.of(context);
+    final apiService = viewModel.apiService;
+
     return SizedBox(
       height: 195,
       child: ListView.builder(
@@ -202,10 +214,58 @@ class _HomeScreenState extends State<HomeScreen> {
             title: album.title,
             subtitle: album.artist,
             imageUrl: album.imageUrl,
+            onTap: () => _playAlbum(
+              context: context,
+              album: album,
+              player: player,
+              apiService: apiService,
+            ),
           );
         },
       ),
     );
+  }
+
+  /// Fetches full album details (with songs) then starts playback.
+  /// Shows a snackbar if the album has no playable tracks.
+  Future<void> _playAlbum({
+    required BuildContext context,
+    required Album album,
+    required MusicPlayerController player,
+    required ApiService apiService,
+  }) async {
+    // If the album already has embedded songs, play them directly.
+    if (album.songs.isNotEmpty) {
+      player.playSong(album.songs.first, playlist: album.songs);
+      return;
+    }
+
+    // Otherwise fetch the full album detail which includes the song list.
+    final result = await apiService.getAlbumById(album.id);
+    if (!context.mounted) return;
+
+    if (result.isError || result.data == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.error?.message ?? 'Could not load album songs.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final songs = result.data!.songs;
+    if (songs.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No playable songs found in this album.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    player.playSong(songs.first, playlist: songs);
   }
 }
 
