@@ -31,17 +31,29 @@ class HomeViewModel extends ChangeNotifier {
   })  : _apiService = apiService,
         _storageService = storageService;
 
+  /// Exposes the shared [ApiService] so screens can make on-demand requests
+  /// (e.g. fetching album song lists on tap) without creating a new instance.
+  ApiService get apiService => _apiService;
+
   List<String> languages = const [];
-  bool _initialized = false;
-  bool get isInitialized => _initialized;
+  DateTime? _lastFetchedAt;
+
+  /// Returns true when data has been loaded at least once AND is still fresh
+  /// (fetched within the last 30 minutes). Outside that window the home screen
+  /// will re-fetch so trending / new-release content stays current.
+  static const Duration _cacheTtl = Duration(minutes: 30);
+
+  bool get isInitialized =>
+      _lastFetchedAt != null &&
+      DateTime.now().difference(_lastFetchedAt!) < _cacheTtl;
 
   SectionState<List<Song>> trendingSongs = const SectionState();
   SectionState<List<Album>> newReleases = const SectionState();
   SectionState<List<Song>> recommendedSongs = const SectionState();
 
   Future<void> initialize() async {
-    if (_initialized) return;
-    _initialized = true;
+    if (isInitialized) return;
+    _lastFetchedAt = DateTime.now();
     languages = _storageService
         .getSelectedLanguages()
         .map((language) => language.trim())
@@ -73,8 +85,11 @@ class HomeViewModel extends ChangeNotifier {
   Future<void> fetchTrendingSongs() async {
     trendingSongs = const SectionState(state: LoadingState.loading);
     notifyListeners();
+    // Use "trending {language} songs" — this query format reliably returns
+    // current chart results from the JioSaavn API (year-scoped and month-name
+    // variants return 0 results for this endpoint).
     trendingSongs = await _fetchSongsAcrossLanguages(
-      queryForLanguage: (language) => '$language trending songs',
+      queryForLanguage: (language) => 'trending $language songs',
     );
     notifyListeners();
   }
@@ -83,10 +98,11 @@ class HomeViewModel extends ChangeNotifier {
     newReleases = const SectionState(state: LoadingState.loading);
     notifyListeners();
 
+    final currentYear = DateTime.now().year;
     final responses = await Future.wait(
       languages.map(
         (language) =>
-            _apiService.searchAlbums('$language new releases', limit: 8),
+            _apiService.searchAlbums('$language new albums $currentYear', limit: 8),
       ),
     );
     final successful = responses.where((result) => result.isSuccess).toList();
@@ -114,6 +130,9 @@ class HomeViewModel extends ChangeNotifier {
     recommendedSongs = const SectionState(state: LoadingState.loading);
     notifyListeners();
 
+    // Try the song-suggestions API first using seeds from trending.
+    // The /songs/{id}/suggestions endpoint is unreliable on this server so we
+    // fall through immediately to a direct search when it fails.
     final seeds = <String, Song>{};
     for (final song in (trendingSongs.data ?? const <Song>[])) {
       if (song.language == null ||
@@ -126,62 +145,57 @@ class HomeViewModel extends ChangeNotifier {
       if (seeds.length >= languages.length) break;
     }
 
-    if (seeds.isEmpty) {
-      recommendedSongs = const SectionState(
-        state: LoadingState.error,
-        errorMessage: 'No language-matched songs are available to recommend.',
+    if (seeds.isNotEmpty) {
+      final responses = await Future.wait(
+        seeds.values.map((song) => _apiService.getSongSuggestions(song.id)),
       );
-      notifyListeners();
-      return;
-    }
+      final successful = responses.where((r) => r.isSuccess).toList();
+      final suggestedSongs = successful.expand((r) => r.data!).toList();
+      final preferredLanguages =
+          languages.map((l) => l.toLowerCase()).toSet();
+      final languageMatched = suggestedSongs.where((song) {
+        final lang = song.language?.toLowerCase();
+        return lang == null ||
+            lang.isEmpty ||
+            preferredLanguages.contains(lang);
+      }).toList();
 
-    final responses = await Future.wait(
-      seeds.values.map((song) => _apiService.getSongSuggestions(song.id)),
-    );
-    final successful = responses.where((result) => result.isSuccess).toList();
-    final suggestedSongs =
-        successful.expand((result) => result.data!).toList();
-    final preferredLanguages =
-        languages.map((language) => language.toLowerCase()).toSet();
-    final languageMatchedSuggestions = suggestedSongs.where((song) {
-      final language = song.language?.toLowerCase();
-      return language == null ||
-          language.isEmpty ||
-          preferredLanguages.contains(language);
-    }).toList();
-
-    if (languageMatchedSuggestions.isEmpty) {
-      final fallbackResponses = await Future.wait(
-        languages.map(
-          (language) =>
-              _apiService.searchSongs('$language recommended songs', limit: 10),
-        ),
-      );
-      final successfulFallbacks =
-          fallbackResponses.where((result) => result.isSuccess).toList();
-      if (successfulFallbacks.isEmpty) {
-        recommendedSongs = SectionState(
-          state: LoadingState.error,
-          errorMessage: _firstError(responses) ??
-              _firstError(fallbackResponses) ??
-              'Could not load recommendations.',
-        );
-      } else {
+      if (languageMatched.isNotEmpty) {
         final songs = <String, Song>{};
-        for (final result in successfulFallbacks) {
-          for (final song in result.data!.results) {
-            songs.putIfAbsent(song.id, () => song);
-          }
+        for (final song in languageMatched) {
+          songs.putIfAbsent(song.id, () => song);
         }
         recommendedSongs = SectionState(
           state: LoadingState.loaded,
           data: songs.values.toList(),
         );
+        notifyListeners();
+        return;
       }
+    }
+
+    // Fallback: direct search for popular songs in each selected language.
+    // "popular {language} songs" reliably returns results from this API.
+    final fallbackResponses = await Future.wait(
+      languages.map(
+        (language) =>
+            _apiService.searchSongs('popular $language songs', limit: 10),
+      ),
+    );
+    final successfulFallbacks =
+        fallbackResponses.where((r) => r.isSuccess).toList();
+    if (successfulFallbacks.isEmpty) {
+      recommendedSongs = SectionState(
+        state: LoadingState.error,
+        errorMessage:
+            _firstError(fallbackResponses) ?? 'Could not load recommendations.',
+      );
     } else {
       final songs = <String, Song>{};
-      for (final song in languageMatchedSuggestions) {
-        songs.putIfAbsent(song.id, () => song);
+      for (final result in successfulFallbacks) {
+        for (final song in result.data!.results) {
+          songs.putIfAbsent(song.id, () => song);
+        }
       }
       recommendedSongs = SectionState(
         state: LoadingState.loaded,

@@ -464,6 +464,19 @@ class ApiService {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
+  //  Album by ID
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /// Retrieves a full album (including its song list) by album ID.
+  Future<ApiResult<Album>> getAlbumById(String albumId) async {
+    return _wrap(() async {
+      final body = await _get('/albums', queryParams: {'id': albumId});
+      final data = body['data'] as Map<String, dynamic>;
+      return Album.fromJson(data);
+    });
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
   //  Private Helpers
   // ──────────────────────────────────────────────────────────────────────────
 
